@@ -1,0 +1,621 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Costeo de Milanesas Carnave</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+  /* Layout: planilla de costeo a la izquierda (bloques por insumo), ticket de resultados fijo a la derecha; en celular el ticket va arriba. */
+  :root {
+    --bg: #f6f3f3;
+    --surface: #ffffff;
+    --surface-2: #faf6f6;
+    --ink: #221a1b;
+    --muted: #6f6264;
+    --line: #e6dcdd;
+    --accent: #d62839;
+    --accent-ink: #ffffff;
+    --accent-soft: #fbe5e7;
+    --ok: #1f8a4c;
+    --warn: #b7791f;
+    --seg-1: #d62839;
+    --seg-2: #e9a23b;
+    --seg-3: #c9853f;
+    --seg-4: #5c8f3a;
+    --seg-5: #3f6e9e;
+    --seg-6: #8a7b7d;
+    --font-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+    --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-num: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161213; --surface: #201a1b; --surface-2: #1b1617; --ink: #f3ecec; --muted: #b3a5a7;
+      --line: #3a3031; --accent: #ff5262; --accent-ink: #1a0d0f; --accent-soft: #3a1c20;
+      --ok: #4cc27f; --warn: #e3ab52;
+      --seg-1: #ff5262; --seg-2: #f2b453; --seg-3: #d9a066; --seg-4: #86bf5e; --seg-5: #6fa2d6; --seg-6: #a89799;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #161213; --surface: #201a1b; --surface-2: #1b1617; --ink: #f3ecec; --muted: #b3a5a7;
+    --line: #3a3031; --accent: #ff5262; --accent-ink: #1a0d0f; --accent-soft: #3a1c20;
+    --ok: #4cc27f; --warn: #e3ab52;
+    --seg-1: #ff5262; --seg-2: #f2b453; --seg-3: #d9a066; --seg-4: #86bf5e; --seg-5: #6fa2d6; --seg-6: #a89799;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-block: 28px 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  header.top {
+    display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px;
+    padding-bottom: 20px; border-bottom: 3px solid var(--ink); margin-bottom: 24px;
+  }
+  .brand { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .eyebrow {
+    font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 800; font-size: clamp(34px, 6vw, 54px);
+    line-height: .95; margin: 0; text-transform: uppercase; letter-spacing: .01em; text-wrap: balance;
+  }
+  .sub { color: var(--muted); margin: 6px 0 0; max-width: 60ch; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  button {
+    font: inherit; font-weight: 600; font-size: 14px; cursor: pointer;
+    border-radius: 8px; padding: 9px 14px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink);
+    transition: background .15s, border-color .15s, transform .05s;
+  }
+  button:hover { border-color: var(--ink); }
+  button:active { transform: translateY(1px); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  button.primary:hover { filter: brightness(1.06); }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: start; }
+  @media (max-width: 920px) {
+    .grid { grid-template-columns: minmax(0, 1fr); }
+    .ticket-col { order: -1; }
+  }
+
+  .sheet { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .block {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 18px 20px 20px; min-width: 0;
+  }
+  .block-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .block h2 {
+    font-family: var(--font-display); font-weight: 700; font-size: 24px; text-transform: uppercase;
+    letter-spacing: .02em; margin: 0; display: flex; align-items: center; gap: 10px;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+  .block-total { font-family: var(--font-num); font-weight: 700; font-size: 15px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px 14px; }
+  .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .field label { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+  .input {
+    display: flex; align-items: center; background: var(--surface-2);
+    border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+  }
+  .input:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .input span { padding: 0 10px; color: var(--muted); font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .input input {
+    flex: 1; min-width: 0; border: 0; background: transparent; color: var(--ink);
+    font-family: var(--font-num); font-size: 15px; padding: 10px 10px; font-variant-numeric: tabular-nums;
+  }
+  .input input:focus { outline: none; }
+  .input span + input { padding-left: 0; }
+  .hint { font-size: 12.5px; color: var(--muted); margin: 10px 0 0; }
+  .hint b { color: var(--ink); font-weight: 600; }
+
+  /* Condimentos */
+  .cond-table { width: 100%; border-collapse: collapse; }
+  .cond-wrap { overflow-x: auto; }
+  .cond-table th {
+    text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase;
+    letter-spacing: .04em; padding: 0 6px 6px;
+  }
+  .cond-table td { padding: 4px 6px; vertical-align: middle; }
+  .cond-table td:first-child, .cond-table th:first-child { padding-left: 0; }
+  .cond-table td:last-child, .cond-table th:last-child { padding-right: 0; }
+  .cond-table .num { text-align: right; font-family: var(--font-num); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .cond-table input.name {
+    width: 100%; min-width: 110px; font: inherit; color: var(--ink); background: var(--surface-2);
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px;
+  }
+  .cond-table input.name:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .cond-table .input { min-width: 110px; }
+  .del {
+    border: 0; background: transparent; color: var(--muted); padding: 6px 8px; font-size: 18px; line-height: 1;
+  }
+  .del:hover { color: var(--accent); }
+  .add { margin-top: 10px; border-style: dashed; width: 100%; color: var(--muted); }
+  .add:hover { color: var(--ink); }
+
+  /* Ticket */
+  .ticket-col { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); min-width: 0; }
+  @media (max-width: 920px) { .ticket-col { position: static; } }
+  .ticket {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .ticket-hero { background: var(--ink); color: var(--bg); padding: 18px 20px 20px; }
+  .ticket-hero .label { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+  .big {
+    font-family: var(--font-num); font-weight: 700; font-size: clamp(34px, 5vw, 42px); line-height: 1.05;
+    margin-top: 4px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere;
+  }
+  .big small { font-family: var(--font-body); font-size: 15px; font-weight: 600; opacity: .7; margin-left: 4px; }
+  .ticket-hero .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+  .mini .label { font-size: 11px; }
+  .mini .v { font-family: var(--font-num); font-weight: 700; font-size: 19px; font-variant-numeric: tabular-nums; }
+
+  .price {
+    padding: 16px 20px; background: var(--accent-soft); border-bottom: 1px dashed var(--line);
+    display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: baseline;
+  }
+  .price .label { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .price .v { font-family: var(--font-num); font-weight: 700; font-size: 26px; color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+  .price .s { font-size: 13px; color: var(--muted); }
+  .price .s.r { text-align: right; font-family: var(--font-num); }
+
+  .section { padding: 16px 20px; border-bottom: 1px dashed var(--line); }
+  .section:last-child { border-bottom: 0; }
+  .section h3 {
+    font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px;
+  }
+  .bar { display: flex; height: 14px; border-radius: 4px; overflow: hidden; background: var(--line); gap: 2px; }
+  .bar i { display: block; height: 100%; transition: flex-grow .3s ease; min-width: 0; }
+  .legend { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .legend li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto 48px; gap: 8px; align-items: center; font-size: 14px; }
+  .legend .n { font-family: var(--font-num); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  .legend .p { font-family: var(--font-num); font-variant-numeric: tabular-nums; text-align: right; color: var(--muted); font-size: 13px; }
+
+  .kv { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; font-size: 14px; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; font-family: var(--font-num); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .kv .tot { color: var(--ink); font-weight: 700; padding-top: 6px; border-top: 1px solid var(--line); }
+
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); vertical-align: middle;
+  }
+  .tag.est { background: transparent; border: 1px solid var(--warn); color: var(--warn); }
+  .ticket-foot { display: flex; gap: 8px; padding: 14px 20px 18px; flex-wrap: wrap; }
+  .ticket-foot button { flex: 1; }
+  .toast { font-size: 13px; color: var(--ok); padding: 0 20px 14px; min-height: 1em; margin: -6px 0 0; }
+
+  .note { margin-top: 18px; font-size: 13px; color: var(--muted); max-width: 70ch; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="eyebrow">Carnave · San Nicolás</span>
+      <h1>Costeo de milanesas</h1>
+      <p class="sub">Cargá lo que gastaste en un lote de producción y te calcula el costo real por kilo, por unidad y el precio de venta sugerido.</p>
+    </div>
+    <div class="actions">
+      <button type="button" id="btn-ejemplo">Cargar ejemplo</button>
+      <button type="button" id="btn-limpiar">Limpiar todo</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <main class="sheet">
+
+      <!-- Pechuga -->
+      <section class="block">
+        <div class="block-head">
+          <h2><span class="dot" style="background:var(--seg-1)"></span>Pechuga</h2>
+          <span class="block-total" id="t-pechuga">$0</span>
+        </div>
+        <div class="fields">
+          <div class="field"><label for="pech-kg">Kg comprados</label>
+            <div class="input"><input id="pech-kg" type="number" inputmode="decimal" min="0" step="0.1"><span>kg</span></div></div>
+          <div class="field"><label for="pech-precio">Precio por kg</label>
+            <div class="input"><span>$</span><input id="pech-precio" type="number" inputmode="decimal" min="0" step="1"></div></div>
+          <div class="field"><label for="pech-merma">Merma al limpiar</label>
+            <div class="input"><input id="pech-merma" type="number" inputmode="decimal" min="0" max="95" step="0.5"><span>%</span></div></div>
+        </div>
+        <p class="hint">Merma: grasa, piel, cartílago y recortes que se descartan. Carne limpia que queda: <b id="h-limpia">0 kg</b>. Costo real de la carne limpia: <b id="h-limpia-kg">$0/kg</b>.</p>
+      </section>
+
+      <!-- Rebozado -->
+      <section class="block">
+        <div class="block-head">
+          <h2><span class="dot" style="background:var(--seg-2)"></span>Huevo</h2>
+          <span class="block-total" id="t-huevo">$0</span>
+        </div>
+        <div class="fields">
+          <div class="field"><label for="huevo-cant">Huevos usados</label>
+            <div class="input"><input id="huevo-cant" type="number" inputmode="numeric" min="0" step="1"><span>u.</span></div></div>
+          <div class="field"><label for="huevo-precio">Precio por maple</label>
+            <div class="input"><span>$</span><input id="huevo-precio" type="number" inputmode="decimal" min="0" step="1"></div></div>
+          <div class="field"><label for="huevo-maple">Huevos por maple</label>
+            <div class="input"><input id="huevo-maple" type="number" inputmode="numeric" min="1" step="1"><span>u.</span></div></div>
+        </div>
+        <p class="hint">Costo por huevo: <b id="h-huevo-u">$0</b>. Maple de 30 o docena de 12, lo que compres.</p>
+      </section>
+
+      <section class="block">
+        <div class="block-head">
+          <h2><span class="dot" style="background:var(--seg-3)"></span>Pan rallado</h2>
+          <span class="block-total" id="t-pan">$0</span>
+        </div>
+        <div class="fields">
+          <div class="field"><label for="pan-kg">Kg usados</label>
+            <div class="input"><input id="pan-kg" type="number" inputmode="decimal" min="0" step="0.1"><span>kg</span></div></div>
+          <div class="field"><label for="pan-precio">Precio por kg</label>
+            <div class="input"><span>$</span><input id="pan-precio" type="number" inputmode="decimal" min="0" step="1"></div></div>
+        </div>
+        <p class="hint">Contá solo lo que quedó pegado en las milanesas más lo que se tiró; el sobrante reutilizable no va.</p>
+      </section>
+
+      <!-- Condimentos -->
+      <section class="block">
+        <div class="block-head">
+          <h2><span class="dot" style="background:var(--seg-4)"></span>Condimentos</h2>
+          <span class="block-total" id="t-cond">$0</span>
+        </div>
+        <div class="cond-wrap">
+          <table class="cond-table">
+            <thead><tr><th>Insumo</th><th>Usado</th><th>Precio por kg / litro</th><th class="num">Costo</th><th><span class="sr" hidden>Quitar</span></th></tr></thead>
+            <tbody id="cond-body"></tbody>
+          </table>
+        </div>
+        <button type="button" class="add" id="btn-add-cond">+ Agregar condimento</button>
+        <p class="hint">Cargá el gramaje usado en el lote (ajo, perejil, sal, pimienta, mostaza, leche…). Para líquidos, 1 ml = 1 g.</p>
+      </section>
+
+      <!-- Mano de obra -->
+      <section class="block">
+        <div class="block-head">
+          <h2><span class="dot" style="background:var(--seg-5)"></span>Mano de obra</h2>
+          <span class="block-total" id="t-mo">$0</span>
+        </div>
+        <div class="fields">
+          <div class="field"><label for="mo-horas">Horas de trabajo</label>
+            <div class="input"><input id="mo-horas" type="number" inputmode="decimal" min="0" step="0.25"><span>h</span></div></div>
+          <div class="field"><label for="mo-personas">Personas</label>
+            <div class="input"><input id="mo-personas" type="number" inputmode="numeric" min="0" step="1"><span>pers.</span></div></div>
+          <div class="field"><label for="mo-valor">Valor hora</label>
+            <div class="input"><span>$</span><input id="mo-valor" type="number" inputmode="decimal" min="0" step="1"></div></div>
+        </div>
+        <p class="hint">Incluí limpiar, filetear, golpear, pasar por huevo y pan, y envasar. Horas-hombre totales: <b id="h-hh">0 h</b>.</p>
+      </section>
+
+      <!-- Otros -->
+      <section class="block">
+        <div class="block-head">
+          <h2><span class="dot" style="background:var(--seg-6)"></span>Otros gastos</h2>
+          <span class="block-total" id="t-otros">$0</span>
+        </div>
+        <div class="fields">
+          <div class="field"><label for="otros-envase">Bandejas, film, etiquetas</label>
+            <div class="input"><span>$</span><input id="otros-envase" type="number" inputmode="decimal" min="0" step="1"></div></div>
+          <div class="field"><label for="otros-energia">Luz, gas, frío</label>
+            <div class="input"><span>$</span><input id="otros-energia" type="number" inputmode="decimal" min="0" step="1"></div></div>
+        </div>
+      </section>
+
+      <!-- Producción -->
+      <section class="block">
+        <div class="block-head">
+          <h2>Producción y precio</h2>
+        </div>
+        <div class="fields">
+          <div class="field"><label for="prod-kg">Kg de milanesa terminada</label>
+            <div class="input"><input id="prod-kg" type="number" inputmode="decimal" min="0" step="0.1" placeholder="auto"><span>kg</span></div></div>
+          <div class="field"><label for="prod-peso">Peso por milanesa</label>
+            <div class="input"><input id="prod-peso" type="number" inputmode="numeric" min="1" step="5"><span>g</span></div></div>
+          <div class="field"><label for="prod-ganancia">Ganancia sobre costo</label>
+            <div class="input"><input id="prod-ganancia" type="number" inputmode="decimal" min="0" step="1"><span>%</span></div></div>
+        </div>
+        <p class="hint" id="h-prod">Pesá el lote ya empanado. Si lo dejás vacío se estima con carne limpia + pan rallado + huevo.</p>
+      </section>
+
+      <p class="note">Los valores precargados son un ejemplo para ver cómo funciona; reemplazalos por tus precios. Lo que cargues queda guardado en este navegador.</p>
+    </main>
+
+    <aside class="ticket-col">
+      <div class="ticket" aria-live="polite">
+        <div class="ticket-hero">
+          <div class="label">Costo por kilo</div>
+          <div class="big" id="r-kg">$0<small>/kg</small></div>
+          <div class="row2">
+            <div class="mini"><div class="label">Por milanesa</div><div class="v" id="r-u">$0</div></div>
+            <div class="mini"><div class="label">Costo del lote</div><div class="v" id="r-total">$0</div></div>
+          </div>
+        </div>
+
+        <div class="price">
+          <span class="label">Precio sugerido</span>
+          <span class="v" id="r-precio">$0</span>
+          <span class="s" id="r-margen">Ganancia 0%</span>
+          <span class="s r" id="r-precio-u">$0 c/u</span>
+        </div>
+
+        <div class="section">
+          <h3>¿En qué se va la plata?</h3>
+          <div class="bar" id="r-bar"></div>
+          <ul class="legend" id="r-legend"></ul>
+        </div>
+
+        <div class="section">
+          <h3>Rendimiento del lote</h3>
+          <dl class="kv">
+            <dt>Pechuga comprada</dt><dd id="r-compra">0 kg</dd>
+            <dt>Carne limpia</dt><dd id="r-limpia">0 kg</dd>
+            <dt>Milanesa terminada <span class="tag est" id="r-est" hidden>estimado</span></dt><dd id="r-term">0 kg</dd>
+            <dt>Unidades aprox.</dt><dd id="r-unid">0</dd>
+            <dt class="tot">Ganancia del lote</dt><dd class="tot" id="r-gan">$0</dd>
+          </dl>
+        </div>
+
+        <div class="ticket-foot">
+          <button type="button" class="primary" id="btn-copiar">Copiar resumen</button>
+        </div>
+        <p class="toast" id="toast"></p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  var KEY = "carnave-costeo-milanesa-v1";
+
+  var EJEMPLO = {
+    "pech-kg": 10, "pech-precio": 7800, "pech-merma": 12,
+    "huevo-cant": 12, "huevo-precio": 7500, "huevo-maple": 30,
+    "pan-kg": 2.5, "pan-precio": 3200,
+    "mo-horas": 2.5, "mo-personas": 1, "mo-valor": 5500,
+    "otros-envase": 3500, "otros-energia": 1500,
+    "prod-kg": "", "prod-peso": 160, "prod-ganancia": 40,
+    cond: [
+      { n: "Ajo", g: 80, p: 9000 },
+      { n: "Perejil", g: 100, p: 6000 },
+      { n: "Sal fina", g: 120, p: 1200 },
+      { n: "Pimienta negra", g: 15, p: 28000 },
+      { n: "Mostaza", g: 150, p: 4500 }
+    ]
+  };
+
+  var CAMPOS = ["pech-kg","pech-precio","pech-merma","huevo-cant","huevo-precio","huevo-maple",
+    "pan-kg","pan-precio","mo-horas","mo-personas","mo-valor","otros-envase","otros-energia",
+    "prod-kg","prod-peso","prod-ganancia"];
+
+  var $ = function (id) { return document.getElementById(id); };
+  var condBody = $("cond-body");
+
+  var money = new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
+  var num1 = new Intl.NumberFormat("es-AR", { maximumFractionDigits: 2 });
+  function $$(v) { return money.format(isFinite(v) ? v : 0); }
+  function kg(v) { return num1.format(isFinite(v) ? v : 0) + " kg"; }
+  function val(id) { var x = parseFloat($(id).value); return isFinite(x) ? x : 0; }
+
+  function filaCond(c) {
+    var tr = document.createElement("tr");
+    var uid = "c" + Math.random().toString(36).slice(2, 8);
+    tr.innerHTML =
+      '<td><input class="name" id="' + uid + '-n" type="text" placeholder="Ej: orégano" aria-label="Insumo"></td>' +
+      '<td><div class="input"><input id="' + uid + '-g" type="number" inputmode="decimal" min="0" step="1" aria-label="Gramos usados"><span>g</span></div></td>' +
+      '<td><div class="input"><span>$</span><input id="' + uid + '-p" type="number" inputmode="decimal" min="0" step="1" aria-label="Precio por kilo"></div></td>' +
+      '<td class="num" data-costo>$0</td>' +
+      '<td><button type="button" class="del" aria-label="Quitar condimento" title="Quitar">×</button></td>';
+    tr.querySelector(".name").value = c.n || "";
+    tr.querySelector('[id$="-g"]').value = c.g === "" || c.g == null ? "" : c.g;
+    tr.querySelector('[id$="-p"]').value = c.p === "" || c.p == null ? "" : c.p;
+    tr.querySelector(".del").addEventListener("click", function () { tr.remove(); calcular(); });
+    condBody.appendChild(tr);
+    return tr;
+  }
+
+  function leerCond() {
+    return Array.prototype.map.call(condBody.rows, function (tr) {
+      var g = parseFloat(tr.querySelector('[id$="-g"]').value);
+      var p = parseFloat(tr.querySelector('[id$="-p"]').value);
+      return { n: tr.querySelector(".name").value, g: isFinite(g) ? g : "", p: isFinite(p) ? p : "", tr: tr };
+    });
+  }
+
+  function cargar(d) {
+    CAMPOS.forEach(function (id) { $(id).value = d[id] === undefined ? "" : d[id]; });
+    condBody.innerHTML = "";
+    (d.cond || []).forEach(filaCond);
+    calcular();
+  }
+
+  function guardar() {
+    var d = {};
+    CAMPOS.forEach(function (id) { d[id] = $(id).value; });
+    d.cond = leerCond().map(function (c) { return { n: c.n, g: c.g, p: c.p }; });
+    try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {}
+  }
+
+  var ultimo = null;
+
+  function calcular() {
+    // Pechuga
+    var pkg = val("pech-kg"), pPrecio = val("pech-precio"), merma = Math.min(Math.max(val("pech-merma"), 0), 95);
+    var cPech = pkg * pPrecio;
+    var limpia = pkg * (1 - merma / 100);
+
+    // Huevo
+    var hCant = val("huevo-cant"), hMaple = val("huevo-maple") || 1;
+    var hU = val("huevo-precio") / hMaple;
+    var cHuevo = hCant * hU;
+
+    // Pan rallado
+    var panKg = val("pan-kg");
+    var cPan = panKg * val("pan-precio");
+
+    // Condimentos
+    var cCond = 0;
+    leerCond().forEach(function (c) {
+      var costo = ((c.g || 0) / 1000) * (c.p || 0);
+      cCond += costo;
+      c.tr.querySelector("[data-costo]").textContent = $$(costo);
+    });
+
+    // Mano de obra
+    var hh = val("mo-horas") * val("mo-personas");
+    var cMo = hh * val("mo-valor");
+
+    // Otros
+    var cOtros = val("otros-envase") + val("otros-energia");
+
+    var total = cPech + cHuevo + cPan + cCond + cMo + cOtros;
+
+    // Producción: lo pesado, o estimado (huevo ~50 g absorbido c/u)
+    var kgIngresado = parseFloat($("prod-kg").value);
+    var estimado = !(isFinite(kgIngresado) && kgIngresado > 0);
+    var term = estimado ? limpia + panKg + hCant * 0.05 : kgIngresado;
+    var peso = val("prod-peso") || 160;
+    var unid = term * 1000 / peso;
+
+    var costoKg = term > 0 ? total / term : 0;
+    var costoU = unid > 0 ? total / unid : 0;
+    var gan = Math.max(val("prod-ganancia"), 0);
+    var precioKg = costoKg * (1 + gan / 100);
+    var precioU = costoU * (1 + gan / 100);
+    var margen = precioKg > 0 ? (precioKg - costoKg) / precioKg * 100 : 0;
+
+    // Bloques
+    $("t-pechuga").textContent = $$(cPech);
+    $("t-huevo").textContent = $$(cHuevo);
+    $("t-pan").textContent = $$(cPan);
+    $("t-cond").textContent = $$(cCond);
+    $("t-mo").textContent = $$(cMo);
+    $("t-otros").textContent = $$(cOtros);
+    $("h-limpia").textContent = kg(limpia);
+    $("h-limpia-kg").textContent = $$(limpia > 0 ? cPech / limpia : 0) + "/kg";
+    $("h-huevo-u").textContent = $$(hU);
+    $("h-hh").textContent = num1.format(hh) + " h";
+    $("prod-kg").placeholder = "auto: " + num1.format(term);
+
+    // Ticket
+    $("r-kg").innerHTML = $$(costoKg) + "<small>/kg</small>";
+    $("r-u").textContent = $$(costoU);
+    $("r-total").textContent = $$(total);
+    $("r-precio").textContent = $$(precioKg) + "/kg";
+    $("r-precio-u").textContent = $$(precioU) + " c/u";
+    $("r-margen").textContent = "Ganancia " + num1.format(gan) + "% · margen " + num1.format(margen) + "%";
+    $("r-compra").textContent = kg(pkg);
+    $("r-limpia").textContent = kg(limpia);
+    $("r-term").textContent = kg(term);
+    $("r-est").hidden = !estimado;
+    $("r-unid").textContent = num1.format(Math.floor(unid));
+    $("r-gan").textContent = $$(precioKg * term - total);
+
+    var partes = [
+      ["Pechuga", cPech, "--seg-1"], ["Huevo", cHuevo, "--seg-2"], ["Pan rallado", cPan, "--seg-3"],
+      ["Condimentos", cCond, "--seg-4"], ["Mano de obra", cMo, "--seg-5"], ["Otros", cOtros, "--seg-6"]
+    ];
+    var bar = $("r-bar"), leg = $("r-legend");
+    bar.innerHTML = ""; leg.innerHTML = "";
+    partes.forEach(function (p) {
+      var pct = total > 0 ? p[1] / total * 100 : 0;
+      if (pct > 0) {
+        var i = document.createElement("i");
+        i.style.flexGrow = pct; i.style.flexBasis = "0"; i.style.background = "var(" + p[2] + ")";
+        i.title = p[0] + ": " + num1.format(pct) + "%";
+        bar.appendChild(i);
+      }
+      var li = document.createElement("li");
+      li.innerHTML = '<span class="dot" style="background:var(' + p[2] + ')"></span><span>' + p[0] +
+        '</span><span class="n">' + $$(p[1]) + '</span><span class="p">' + num1.format(pct) + '%</span>';
+      leg.appendChild(li);
+    });
+
+    ultimo = { total: total, term: term, estimado: estimado, unid: unid, costoKg: costoKg, costoU: costoU,
+      precioKg: precioKg, precioU: precioU, gan: gan, margen: margen, partes: partes };
+    guardar();
+  }
+
+  function resumen() {
+    var r = ultimo; if (!r) return "";
+    var l = [
+      "COSTEO DE MILANESAS – CARNAVE",
+      "Lote: " + kg(r.term) + (r.estimado ? " (estimado)" : "") + " · ~" + Math.floor(r.unid) + " unidades",
+      "",
+      "Costo del lote: " + $$(r.total),
+      "Costo por kg: " + $$(r.costoKg),
+      "Costo por milanesa: " + $$(r.costoU),
+      "",
+      "Precio sugerido (+" + num1.format(r.gan) + "%): " + $$(r.precioKg) + "/kg · " + $$(r.precioU) + " c/u",
+      "",
+      "Detalle:"
+    ];
+    r.partes.forEach(function (p) {
+      l.push("  " + p[0] + ": " + $$(p[1]) + " (" + num1.format(r.total > 0 ? p[1] / r.total * 100 : 0) + "%)");
+    });
+    return l.join("\n");
+  }
+
+  var toastT;
+  function toast(msg) {
+    $("toast").textContent = msg;
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { $("toast").textContent = ""; }, 2500);
+  }
+
+  $("btn-copiar").addEventListener("click", function () {
+    var txt = resumen();
+    var fallback = function () {
+      var ta = document.createElement("textarea");
+      ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      ta.remove();
+      toast(ok ? "Resumen copiado." : "No se pudo copiar. Probá desde otro navegador.");
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function () { toast("Resumen copiado. Pegalo en WhatsApp o donde quieras."); }, fallback);
+    } else { fallback(); }
+  });
+
+  $("btn-add-cond").addEventListener("click", function () {
+    var tr = filaCond({ n: "", g: "", p: "" });
+    tr.querySelector(".name").focus();
+    calcular();
+  });
+  $("btn-ejemplo").addEventListener("click", function () { cargar(EJEMPLO); toast("Ejemplo cargado."); });
+  $("btn-limpiar").addEventListener("click", function () {
+    var vacio = { "huevo-maple": 30, "prod-peso": 160, "prod-ganancia": 40, cond: [{ n: "", g: "", p: "" }] };
+    cargar(vacio);
+    toast("Planilla en blanco.");
+  });
+
+  document.addEventListener("input", function (e) {
+    if (e.target.matches("input")) calcular();
+  });
+
+  var guardado = null;
+  try { guardado = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
+  cargar(guardado || EJEMPLO);
+})();
+</script>

@@ -264,20 +264,6 @@
         <p class="hint">Incluí limpiar, filetear, golpear, pasar por huevo y pan, y envasar. Horas-hombre totales: <b id="h-hh">0 h</b>.</p>
       </section>
 
-      <!-- Otros -->
-      <section class="block">
-        <div class="block-head">
-          <h2><span class="dot" style="background:var(--seg-6)"></span>Otros gastos</h2>
-          <span class="block-total" id="t-otros">$0</span>
-        </div>
-        <div class="fields">
-          <div class="field"><label for="otros-envase">Bandejas, film, etiquetas</label>
-            <div class="input"><span>$</span><input id="otros-envase" type="number" inputmode="decimal" min="0" step="1"></div></div>
-          <div class="field"><label for="otros-energia">Luz, gas, frío</label>
-            <div class="input"><span>$</span><input id="otros-energia" type="number" inputmode="decimal" min="0" step="1"></div></div>
-        </div>
-      </section>
-
       <!-- Producción -->
       <section class="block">
         <div class="block-head">
@@ -349,12 +335,11 @@
     "huevo-g": 150, "huevo-precio": 16000, "huevo-bolsa": 1,
     "pan-kg": 2.5, "pan-precio": 3200,
     "mo-horas": 2.5, "mo-personas": 1, "mo-valor": 5500,
-    "otros-envase": 3500, "otros-energia": 1500,
     "prod-kg": "", "prod-peso": 160, "prod-ganancia": 40
   };
 
   var CAMPOS = ["pech-kg","pech-precio","huevo-g","huevo-precio","huevo-bolsa",
-    "pan-kg","pan-precio","mo-horas","mo-personas","mo-valor","otros-envase","otros-energia",
+    "pan-kg","pan-precio","mo-horas","mo-personas","mo-valor",
     "prod-kg","prod-peso","prod-ganancia"];
 
   var $ = function (id) { return document.getElementById(id); };
@@ -396,10 +381,7 @@
     var hh = val("mo-horas") * val("mo-personas");
     var cMo = hh * val("mo-valor");
 
-    // Otros
-    var cOtros = val("otros-envase") + val("otros-energia");
-
-    var total = cPech + cHuevo + cPan + cMo + cOtros;
+    var total = cPech + cHuevo + cPan + cMo;
 
     // Producción: lo pesado, o estimado (polvo + 3 partes de agua)
     var kgIngresado = parseFloat($("prod-kg").value);
@@ -420,7 +402,6 @@
     $("t-huevo").textContent = $$(cHuevo);
     $("t-pan").textContent = $$(cPan);
     $("t-mo").textContent = $$(cMo);
-    $("t-otros").textContent = $$(cOtros);
     $("h-huevo-u").textContent = $$(hU) + "/kg";
     $("h-huevo-eq").textContent = num1.format(Math.round(hKg * 1000 / 12.5));
     $("h-hh").textContent = num1.format(hh) + " h";
@@ -441,7 +422,7 @@
 
     var partes = [
       ["Pechuga", cPech, "--seg-1"], ["Huevo", cHuevo, "--seg-2"], ["Pan rallado", cPan, "--seg-3"],
-      ["Mano de obra", cMo, "--seg-5"], ["Otros", cOtros, "--seg-6"]
+      ["Mano de obra", cMo, "--seg-5"]
     ];
     var bar = $("r-bar"), leg = $("r-legend");
     bar.innerHTML = ""; leg.innerHTML = "";

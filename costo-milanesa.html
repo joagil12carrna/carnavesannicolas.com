@@ -128,30 +128,6 @@
   .hint { font-size: 12.5px; color: var(--muted); margin: 10px 0 0; }
   .hint b { color: var(--ink); font-weight: 600; }
 
-  /* Condimentos */
-  .cond-table { width: 100%; border-collapse: collapse; }
-  .cond-wrap { overflow-x: auto; }
-  .cond-table th {
-    text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase;
-    letter-spacing: .04em; padding: 0 6px 6px;
-  }
-  .cond-table td { padding: 4px 6px; vertical-align: middle; }
-  .cond-table td:first-child, .cond-table th:first-child { padding-left: 0; }
-  .cond-table td:last-child, .cond-table th:last-child { padding-right: 0; }
-  .cond-table .num { text-align: right; font-family: var(--font-num); white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .cond-table input.name {
-    width: 100%; min-width: 110px; font: inherit; color: var(--ink); background: var(--surface-2);
-    border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px;
-  }
-  .cond-table input.name:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-  .cond-table .input { min-width: 110px; }
-  .del {
-    border: 0; background: transparent; color: var(--muted); padding: 6px 8px; font-size: 18px; line-height: 1;
-  }
-  .del:hover { color: var(--accent); }
-  .add { margin-top: 10px; border-style: dashed; width: 100%; color: var(--muted); }
-  .add:hover { color: var(--ink); }
-
   /* Ticket */
   .ticket-col { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); min-width: 0; }
   @media (max-width: 920px) { .ticket-col { position: static; } }
@@ -271,22 +247,6 @@
         <p class="hint">Contá solo lo que quedó pegado en las milanesas más lo que se tiró; el sobrante reutilizable no va.</p>
       </section>
 
-      <!-- Condimentos -->
-      <section class="block">
-        <div class="block-head">
-          <h2><span class="dot" style="background:var(--seg-4)"></span>Condimentos</h2>
-          <span class="block-total" id="t-cond">$0</span>
-        </div>
-        <div class="cond-wrap">
-          <table class="cond-table">
-            <thead><tr><th>Insumo</th><th>Usado</th><th>Precio por kg / litro</th><th class="num">Costo</th><th><span class="sr" hidden>Quitar</span></th></tr></thead>
-            <tbody id="cond-body"></tbody>
-          </table>
-        </div>
-        <button type="button" class="add" id="btn-add-cond">+ Agregar condimento</button>
-        <p class="hint">Cargá el gramaje usado en el lote (ajo, perejil, sal, pimienta, mostaza, leche…). Para líquidos, 1 ml = 1 g.</p>
-      </section>
-
       <!-- Mano de obra -->
       <section class="block">
         <div class="block-head">
@@ -390,14 +350,7 @@
     "pan-kg": 2.5, "pan-precio": 3200,
     "mo-horas": 2.5, "mo-personas": 1, "mo-valor": 5500,
     "otros-envase": 3500, "otros-energia": 1500,
-    "prod-kg": "", "prod-peso": 160, "prod-ganancia": 40,
-    cond: [
-      { n: "Ajo", g: 80, p: 9000 },
-      { n: "Perejil", g: 100, p: 6000 },
-      { n: "Sal fina", g: 120, p: 1200 },
-      { n: "Pimienta negra", g: 15, p: 28000 },
-      { n: "Mostaza", g: 150, p: 4500 }
-    ]
+    "prod-kg": "", "prod-peso": 160, "prod-ganancia": 40
   };
 
   var CAMPOS = ["pech-kg","pech-precio","huevo-g","huevo-precio","huevo-bolsa",
@@ -405,7 +358,6 @@
     "prod-kg","prod-peso","prod-ganancia"];
 
   var $ = function (id) { return document.getElementById(id); };
-  var condBody = $("cond-body");
 
   var money = new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
   var num1 = new Intl.NumberFormat("es-AR", { maximumFractionDigits: 2 });
@@ -413,42 +365,14 @@
   function kg(v) { return num1.format(isFinite(v) ? v : 0) + " kg"; }
   function val(id) { var x = parseFloat($(id).value); return isFinite(x) ? x : 0; }
 
-  function filaCond(c) {
-    var tr = document.createElement("tr");
-    var uid = "c" + Math.random().toString(36).slice(2, 8);
-    tr.innerHTML =
-      '<td><input class="name" id="' + uid + '-n" type="text" placeholder="Ej: orégano" aria-label="Insumo"></td>' +
-      '<td><div class="input"><input id="' + uid + '-g" type="number" inputmode="decimal" min="0" step="1" aria-label="Gramos usados"><span>g</span></div></td>' +
-      '<td><div class="input"><span>$</span><input id="' + uid + '-p" type="number" inputmode="decimal" min="0" step="1" aria-label="Precio por kilo"></div></td>' +
-      '<td class="num" data-costo>$0</td>' +
-      '<td><button type="button" class="del" aria-label="Quitar condimento" title="Quitar">×</button></td>';
-    tr.querySelector(".name").value = c.n || "";
-    tr.querySelector('[id$="-g"]').value = c.g === "" || c.g == null ? "" : c.g;
-    tr.querySelector('[id$="-p"]').value = c.p === "" || c.p == null ? "" : c.p;
-    tr.querySelector(".del").addEventListener("click", function () { tr.remove(); calcular(); });
-    condBody.appendChild(tr);
-    return tr;
-  }
-
-  function leerCond() {
-    return Array.prototype.map.call(condBody.rows, function (tr) {
-      var g = parseFloat(tr.querySelector('[id$="-g"]').value);
-      var p = parseFloat(tr.querySelector('[id$="-p"]').value);
-      return { n: tr.querySelector(".name").value, g: isFinite(g) ? g : "", p: isFinite(p) ? p : "", tr: tr };
-    });
-  }
-
   function cargar(d) {
     CAMPOS.forEach(function (id) { $(id).value = d[id] === undefined ? "" : d[id]; });
-    condBody.innerHTML = "";
-    (d.cond || []).forEach(filaCond);
     calcular();
   }
 
   function guardar() {
     var d = {};
     CAMPOS.forEach(function (id) { d[id] = $(id).value; });
-    d.cond = leerCond().map(function (c) { return { n: c.n, g: c.g, p: c.p }; });
     try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {}
   }
 
@@ -468,14 +392,6 @@
     var panKg = val("pan-kg");
     var cPan = panKg * val("pan-precio");
 
-    // Condimentos
-    var cCond = 0;
-    leerCond().forEach(function (c) {
-      var costo = ((c.g || 0) / 1000) * (c.p || 0);
-      cCond += costo;
-      c.tr.querySelector("[data-costo]").textContent = $$(costo);
-    });
-
     // Mano de obra
     var hh = val("mo-horas") * val("mo-personas");
     var cMo = hh * val("mo-valor");
@@ -483,7 +399,7 @@
     // Otros
     var cOtros = val("otros-envase") + val("otros-energia");
 
-    var total = cPech + cHuevo + cPan + cCond + cMo + cOtros;
+    var total = cPech + cHuevo + cPan + cMo + cOtros;
 
     // Producción: lo pesado, o estimado (polvo + 3 partes de agua)
     var kgIngresado = parseFloat($("prod-kg").value);
@@ -503,7 +419,6 @@
     $("t-pechuga").textContent = $$(cPech);
     $("t-huevo").textContent = $$(cHuevo);
     $("t-pan").textContent = $$(cPan);
-    $("t-cond").textContent = $$(cCond);
     $("t-mo").textContent = $$(cMo);
     $("t-otros").textContent = $$(cOtros);
     $("h-huevo-u").textContent = $$(hU) + "/kg";
@@ -526,7 +441,7 @@
 
     var partes = [
       ["Pechuga", cPech, "--seg-1"], ["Huevo", cHuevo, "--seg-2"], ["Pan rallado", cPan, "--seg-3"],
-      ["Condimentos", cCond, "--seg-4"], ["Mano de obra", cMo, "--seg-5"], ["Otros", cOtros, "--seg-6"]
+      ["Mano de obra", cMo, "--seg-5"], ["Otros", cOtros, "--seg-6"]
     ];
     var bar = $("r-bar"), leg = $("r-legend");
     bar.innerHTML = ""; leg.innerHTML = "";
@@ -591,14 +506,9 @@
     } else { fallback(); }
   });
 
-  $("btn-add-cond").addEventListener("click", function () {
-    var tr = filaCond({ n: "", g: "", p: "" });
-    tr.querySelector(".name").focus();
-    calcular();
-  });
   $("btn-ejemplo").addEventListener("click", function () { cargar(EJEMPLO); toast("Ejemplo cargado."); });
   $("btn-limpiar").addEventListener("click", function () {
-    var vacio = { "huevo-bolsa": 1, "prod-peso": 160, "prod-ganancia": 40, cond: [{ n: "", g: "", p: "" }] };
+    var vacio = { "huevo-bolsa": 1, "prod-peso": 160, "prod-ganancia": 40 };
     cargar(vacio);
     toast("Planilla en blanco.");
   });

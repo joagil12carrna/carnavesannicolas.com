@@ -191,7 +191,7 @@
     <div class="brand">
       <span class="eyebrow">Carnave · San Nicolás</span>
       <h1>Costeo de milanesas</h1>
-      <p class="sub">Cargá lo que gastaste en un lote de producción y te calcula el costo real por kilo, por unidad y el precio de venta sugerido.</p>
+      <p class="sub">Cargá lo que gastaste en un lote de producción y te calcula el costo real por kilo y el precio de venta sugerido.</p>
     </div>
     <div class="actions">
       <button type="button" id="btn-ejemplo">Cargar ejemplo</button>
@@ -267,17 +267,13 @@
       <!-- Producción -->
       <section class="block">
         <div class="block-head">
-          <h2>Producción y precio</h2>
+          <h2>Ganancia</h2>
         </div>
         <div class="fields">
-          <div class="field"><label for="prod-kg">Kg de milanesa terminada</label>
-            <div class="input"><input id="prod-kg" type="number" inputmode="decimal" min="0" step="0.1" placeholder="auto"><span>kg</span></div></div>
-          <div class="field"><label for="prod-peso">Peso por milanesa</label>
-            <div class="input"><input id="prod-peso" type="number" inputmode="numeric" min="1" step="5"><span>g</span></div></div>
           <div class="field"><label for="prod-ganancia">Ganancia sobre costo</label>
             <div class="input"><input id="prod-ganancia" type="number" inputmode="decimal" min="0" step="1"><span>%</span></div></div>
         </div>
-        <p class="hint" id="h-prod">Pesá el lote ya empanado. Si lo dejás vacío se estima con pechuga + pan rallado + huevo.</p>
+        <p class="hint">Porcentaje que le sumás al costo para sacar el precio de venta. Los kilos de milanesa se calculan con pechuga + pan rallado + huevo hidratado.</p>
       </section>
 
       <p class="note">Los valores precargados son un ejemplo para ver cómo funciona; reemplazalos por tus precios. Lo que cargues queda guardado en este navegador.</p>
@@ -289,7 +285,7 @@
           <div class="label">Costo por kilo</div>
           <div class="big" id="r-kg">$0<small>/kg</small></div>
           <div class="row2">
-            <div class="mini"><div class="label">Por milanesa</div><div class="v" id="r-u">$0</div></div>
+            <div class="mini"><div class="label">Kg de milanesa</div><div class="v" id="r-kgprod">0</div></div>
             <div class="mini"><div class="label">Costo del lote</div><div class="v" id="r-total">$0</div></div>
           </div>
         </div>
@@ -298,7 +294,7 @@
           <span class="label">Precio sugerido</span>
           <span class="v" id="r-precio">$0</span>
           <span class="s" id="r-margen">Ganancia 0%</span>
-          <span class="s r" id="r-precio-u">$0 c/u</span>
+          <span class="s r" id="r-venta">Venta $0</span>
         </div>
 
         <div class="section">
@@ -311,8 +307,7 @@
           <h3>Rendimiento del lote</h3>
           <dl class="kv">
             <dt>Pechuga comprada</dt><dd id="r-compra">0 kg</dd>
-            <dt>Milanesa terminada <span class="tag est" id="r-est" hidden>estimado</span></dt><dd id="r-term">0 kg</dd>
-            <dt>Unidades aprox.</dt><dd id="r-unid">0</dd>
+            <dt>Milanesa obtenida</dt><dd id="r-term">0 kg</dd>
             <dt class="tot">Ganancia del lote</dt><dd class="tot" id="r-gan">$0</dd>
           </dl>
         </div>
@@ -335,12 +330,12 @@
     "huevo-g": 150, "huevo-precio": 16000, "huevo-bolsa": 1,
     "pan-kg": 2.5, "pan-precio": 3200,
     "mo-horas": 2.5, "mo-personas": 1, "mo-valor": 5500,
-    "prod-kg": "", "prod-peso": 160, "prod-ganancia": 40
+    "prod-ganancia": 40
   };
 
   var CAMPOS = ["pech-kg","pech-precio","huevo-g","huevo-precio","huevo-bolsa",
     "pan-kg","pan-precio","mo-horas","mo-personas","mo-valor",
-    "prod-kg","prod-peso","prod-ganancia"];
+    "prod-ganancia"];
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -383,18 +378,12 @@
 
     var total = cPech + cHuevo + cPan + cMo;
 
-    // Producción: lo pesado, o estimado (polvo + 3 partes de agua)
-    var kgIngresado = parseFloat($("prod-kg").value);
-    var estimado = !(isFinite(kgIngresado) && kgIngresado > 0);
-    var term = estimado ? pkg + panKg + hKg * 4 : kgIngresado;
-    var peso = val("prod-peso") || 160;
-    var unid = term * 1000 / peso;
+    // Kilos producidos: pechuga + pan rallado + huevo (polvo + 3 partes de agua)
+    var term = pkg + panKg + hKg * 4;
 
     var costoKg = term > 0 ? total / term : 0;
-    var costoU = unid > 0 ? total / unid : 0;
     var gan = Math.max(val("prod-ganancia"), 0);
     var precioKg = costoKg * (1 + gan / 100);
-    var precioU = costoU * (1 + gan / 100);
     var margen = precioKg > 0 ? (precioKg - costoKg) / precioKg * 100 : 0;
 
     // Bloques
@@ -405,19 +394,16 @@
     $("h-huevo-u").textContent = $$(hU) + "/kg";
     $("h-huevo-eq").textContent = num1.format(Math.round(hKg * 1000 / 12.5));
     $("h-hh").textContent = num1.format(hh) + " h";
-    $("prod-kg").placeholder = "auto: " + num1.format(term);
 
     // Ticket
     $("r-kg").innerHTML = $$(costoKg) + "<small>/kg</small>";
-    $("r-u").textContent = $$(costoU);
+    $("r-kgprod").textContent = kg(term);
     $("r-total").textContent = $$(total);
     $("r-precio").textContent = $$(precioKg) + "/kg";
-    $("r-precio-u").textContent = $$(precioU) + " c/u";
+    $("r-venta").textContent = "Venta del lote " + $$(precioKg * term);
     $("r-margen").textContent = "Ganancia " + num1.format(gan) + "% · margen " + num1.format(margen) + "%";
     $("r-compra").textContent = kg(pkg);
     $("r-term").textContent = kg(term);
-    $("r-est").hidden = !estimado;
-    $("r-unid").textContent = num1.format(Math.floor(unid));
     $("r-gan").textContent = $$(precioKg * term - total);
 
     var partes = [
@@ -440,8 +426,8 @@
       leg.appendChild(li);
     });
 
-    ultimo = { total: total, term: term, estimado: estimado, unid: unid, costoKg: costoKg, costoU: costoU,
-      precioKg: precioKg, precioU: precioU, gan: gan, margen: margen, partes: partes };
+    ultimo = { total: total, term: term, costoKg: costoKg,
+      precioKg: precioKg, gan: gan, margen: margen, partes: partes };
     guardar();
   }
 
@@ -449,13 +435,13 @@
     var r = ultimo; if (!r) return "";
     var l = [
       "COSTEO DE MILANESAS – CARNAVE",
-      "Lote: " + kg(r.term) + (r.estimado ? " (estimado)" : "") + " · ~" + Math.floor(r.unid) + " unidades",
+      "Lote: " + kg(r.term) + " de milanesa",
       "",
       "Costo del lote: " + $$(r.total),
       "Costo por kg: " + $$(r.costoKg),
-      "Costo por milanesa: " + $$(r.costoU),
       "",
-      "Precio sugerido (+" + num1.format(r.gan) + "%): " + $$(r.precioKg) + "/kg · " + $$(r.precioU) + " c/u",
+      "Precio sugerido (+" + num1.format(r.gan) + "%): " + $$(r.precioKg) + "/kg",
+      "Ganancia del lote: " + $$((r.precioKg - r.costoKg) * r.term),
       "",
       "Detalle:"
     ];
@@ -489,7 +475,7 @@
 
   $("btn-ejemplo").addEventListener("click", function () { cargar(EJEMPLO); toast("Ejemplo cargado."); });
   $("btn-limpiar").addEventListener("click", function () {
-    var vacio = { "huevo-bolsa": 1, "prod-peso": 160, "prod-ganancia": 40 };
+    var vacio = { "huevo-bolsa": 1, "prod-ganancia": 40 };
     cargar(vacio);
     toast("Planilla en blanco.");
   });

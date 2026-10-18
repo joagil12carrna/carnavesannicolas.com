@@ -246,18 +246,18 @@
       <!-- Rebozado -->
       <section class="block">
         <div class="block-head">
-          <h2><span class="dot" style="background:var(--seg-2)"></span>Huevo</h2>
+          <h2><span class="dot" style="background:var(--seg-2)"></span>Huevo en polvo</h2>
           <span class="block-total" id="t-huevo">$0</span>
         </div>
         <div class="fields">
-          <div class="field"><label for="huevo-cant">Huevos usados</label>
-            <div class="input"><input id="huevo-cant" type="number" inputmode="numeric" min="0" step="1"><span>u.</span></div></div>
-          <div class="field"><label for="huevo-precio">Precio por maple</label>
+          <div class="field"><label for="huevo-g">Polvo usado</label>
+            <div class="input"><input id="huevo-g" type="number" inputmode="decimal" min="0" step="10"><span>g</span></div></div>
+          <div class="field"><label for="huevo-precio">Precio de la bolsa</label>
             <div class="input"><span>$</span><input id="huevo-precio" type="number" inputmode="decimal" min="0" step="1"></div></div>
-          <div class="field"><label for="huevo-maple">Huevos por maple</label>
-            <div class="input"><input id="huevo-maple" type="number" inputmode="numeric" min="1" step="1"><span>u.</span></div></div>
+          <div class="field"><label for="huevo-bolsa">Contenido de la bolsa</label>
+            <div class="input"><input id="huevo-bolsa" type="number" inputmode="decimal" min="0" step="0.1"><span>kg</span></div></div>
         </div>
-        <p class="hint">Costo por huevo: <b id="h-huevo-u">$0</b>. Maple de 30 o docena de 12, lo que compres.</p>
+        <p class="hint">Precio por kg de polvo: <b id="h-huevo-u">$0</b>. Equivale a <b id="h-huevo-eq">0</b> huevos frescos (unos 12,5 g de polvo por huevo, hidratado con 3 partes de agua).</p>
       </section>
 
       <section class="block">
@@ -386,11 +386,11 @@
 
 <script>
 (function () {
-  var KEY = "carnave-costeo-milanesa-v1";
+  var KEY = "carnave-costeo-milanesa-v2";
 
   var EJEMPLO = {
     "pech-kg": 10, "pech-precio": 7800, "pech-merma": 12,
-    "huevo-cant": 12, "huevo-precio": 7500, "huevo-maple": 30,
+    "huevo-g": 150, "huevo-precio": 16000, "huevo-bolsa": 1,
     "pan-kg": 2.5, "pan-precio": 3200,
     "mo-horas": 2.5, "mo-personas": 1, "mo-valor": 5500,
     "otros-envase": 3500, "otros-energia": 1500,
@@ -404,7 +404,7 @@
     ]
   };
 
-  var CAMPOS = ["pech-kg","pech-precio","pech-merma","huevo-cant","huevo-precio","huevo-maple",
+  var CAMPOS = ["pech-kg","pech-precio","pech-merma","huevo-g","huevo-precio","huevo-bolsa",
     "pan-kg","pan-precio","mo-horas","mo-personas","mo-valor","otros-envase","otros-energia",
     "prod-kg","prod-peso","prod-ganancia"];
 
@@ -464,10 +464,10 @@
     var cPech = pkg * pPrecio;
     var limpia = pkg * (1 - merma / 100);
 
-    // Huevo
-    var hCant = val("huevo-cant"), hMaple = val("huevo-maple") || 1;
-    var hU = val("huevo-precio") / hMaple;
-    var cHuevo = hCant * hU;
+    // Huevo en polvo
+    var hKg = val("huevo-g") / 1000, hBolsa = val("huevo-bolsa") || 1;
+    var hU = val("huevo-precio") / hBolsa;
+    var cHuevo = hKg * hU;
 
     // Pan rallado
     var panKg = val("pan-kg");
@@ -490,10 +490,10 @@
 
     var total = cPech + cHuevo + cPan + cCond + cMo + cOtros;
 
-    // Producción: lo pesado, o estimado (huevo ~50 g absorbido c/u)
+    // Producción: lo pesado, o estimado (polvo + 3 partes de agua)
     var kgIngresado = parseFloat($("prod-kg").value);
     var estimado = !(isFinite(kgIngresado) && kgIngresado > 0);
-    var term = estimado ? limpia + panKg + hCant * 0.05 : kgIngresado;
+    var term = estimado ? limpia + panKg + hKg * 4 : kgIngresado;
     var peso = val("prod-peso") || 160;
     var unid = term * 1000 / peso;
 
@@ -513,7 +513,8 @@
     $("t-otros").textContent = $$(cOtros);
     $("h-limpia").textContent = kg(limpia);
     $("h-limpia-kg").textContent = $$(limpia > 0 ? cPech / limpia : 0) + "/kg";
-    $("h-huevo-u").textContent = $$(hU);
+    $("h-huevo-u").textContent = $$(hU) + "/kg";
+    $("h-huevo-eq").textContent = num1.format(Math.round(hKg * 1000 / 12.5));
     $("h-hh").textContent = num1.format(hh) + " h";
     $("prod-kg").placeholder = "auto: " + num1.format(term);
 
@@ -605,7 +606,7 @@
   });
   $("btn-ejemplo").addEventListener("click", function () { cargar(EJEMPLO); toast("Ejemplo cargado."); });
   $("btn-limpiar").addEventListener("click", function () {
-    var vacio = { "huevo-maple": 30, "prod-peso": 160, "prod-ganancia": 40, cond: [{ n: "", g: "", p: "" }] };
+    var vacio = { "huevo-bolsa": 1, "prod-peso": 160, "prod-ganancia": 40, cond: [{ n: "", g: "", p: "" }] };
     cargar(vacio);
     toast("Planilla en blanco.");
   });

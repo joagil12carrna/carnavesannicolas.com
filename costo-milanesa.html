@@ -237,10 +237,7 @@
             <div class="input"><input id="pech-kg" type="number" inputmode="decimal" min="0" step="0.1"><span>kg</span></div></div>
           <div class="field"><label for="pech-precio">Precio por kg</label>
             <div class="input"><span>$</span><input id="pech-precio" type="number" inputmode="decimal" min="0" step="1"></div></div>
-          <div class="field"><label for="pech-merma">Merma al limpiar</label>
-            <div class="input"><input id="pech-merma" type="number" inputmode="decimal" min="0" max="95" step="0.5"><span>%</span></div></div>
         </div>
-        <p class="hint">Merma: grasa, piel, cartílago y recortes que se descartan. Carne limpia que queda: <b id="h-limpia">0 kg</b>. Costo real de la carne limpia: <b id="h-limpia-kg">$0/kg</b>.</p>
       </section>
 
       <!-- Rebozado -->
@@ -334,7 +331,7 @@
           <div class="field"><label for="prod-ganancia">Ganancia sobre costo</label>
             <div class="input"><input id="prod-ganancia" type="number" inputmode="decimal" min="0" step="1"><span>%</span></div></div>
         </div>
-        <p class="hint" id="h-prod">Pesá el lote ya empanado. Si lo dejás vacío se estima con carne limpia + pan rallado + huevo.</p>
+        <p class="hint" id="h-prod">Pesá el lote ya empanado. Si lo dejás vacío se estima con pechuga + pan rallado + huevo.</p>
       </section>
 
       <p class="note">Los valores precargados son un ejemplo para ver cómo funciona; reemplazalos por tus precios. Lo que cargues queda guardado en este navegador.</p>
@@ -368,7 +365,6 @@
           <h3>Rendimiento del lote</h3>
           <dl class="kv">
             <dt>Pechuga comprada</dt><dd id="r-compra">0 kg</dd>
-            <dt>Carne limpia</dt><dd id="r-limpia">0 kg</dd>
             <dt>Milanesa terminada <span class="tag est" id="r-est" hidden>estimado</span></dt><dd id="r-term">0 kg</dd>
             <dt>Unidades aprox.</dt><dd id="r-unid">0</dd>
             <dt class="tot">Ganancia del lote</dt><dd class="tot" id="r-gan">$0</dd>
@@ -389,7 +385,7 @@
   var KEY = "carnave-costeo-milanesa-v2";
 
   var EJEMPLO = {
-    "pech-kg": 10, "pech-precio": 7800, "pech-merma": 12,
+    "pech-kg": 10, "pech-precio": 7800,
     "huevo-g": 150, "huevo-precio": 16000, "huevo-bolsa": 1,
     "pan-kg": 2.5, "pan-precio": 3200,
     "mo-horas": 2.5, "mo-personas": 1, "mo-valor": 5500,
@@ -404,7 +400,7 @@
     ]
   };
 
-  var CAMPOS = ["pech-kg","pech-precio","pech-merma","huevo-g","huevo-precio","huevo-bolsa",
+  var CAMPOS = ["pech-kg","pech-precio","huevo-g","huevo-precio","huevo-bolsa",
     "pan-kg","pan-precio","mo-horas","mo-personas","mo-valor","otros-envase","otros-energia",
     "prod-kg","prod-peso","prod-ganancia"];
 
@@ -460,9 +456,8 @@
 
   function calcular() {
     // Pechuga
-    var pkg = val("pech-kg"), pPrecio = val("pech-precio"), merma = Math.min(Math.max(val("pech-merma"), 0), 95);
-    var cPech = pkg * pPrecio;
-    var limpia = pkg * (1 - merma / 100);
+    var pkg = val("pech-kg");
+    var cPech = pkg * val("pech-precio");
 
     // Huevo en polvo
     var hKg = val("huevo-g") / 1000, hBolsa = val("huevo-bolsa") || 1;
@@ -493,7 +488,7 @@
     // Producción: lo pesado, o estimado (polvo + 3 partes de agua)
     var kgIngresado = parseFloat($("prod-kg").value);
     var estimado = !(isFinite(kgIngresado) && kgIngresado > 0);
-    var term = estimado ? limpia + panKg + hKg * 4 : kgIngresado;
+    var term = estimado ? pkg + panKg + hKg * 4 : kgIngresado;
     var peso = val("prod-peso") || 160;
     var unid = term * 1000 / peso;
 
@@ -511,8 +506,6 @@
     $("t-cond").textContent = $$(cCond);
     $("t-mo").textContent = $$(cMo);
     $("t-otros").textContent = $$(cOtros);
-    $("h-limpia").textContent = kg(limpia);
-    $("h-limpia-kg").textContent = $$(limpia > 0 ? cPech / limpia : 0) + "/kg";
     $("h-huevo-u").textContent = $$(hU) + "/kg";
     $("h-huevo-eq").textContent = num1.format(Math.round(hKg * 1000 / 12.5));
     $("h-hh").textContent = num1.format(hh) + " h";
@@ -526,7 +519,6 @@
     $("r-precio-u").textContent = $$(precioU) + " c/u";
     $("r-margen").textContent = "Ganancia " + num1.format(gan) + "% · margen " + num1.format(margen) + "%";
     $("r-compra").textContent = kg(pkg);
-    $("r-limpia").textContent = kg(limpia);
     $("r-term").textContent = kg(term);
     $("r-est").hidden = !estimado;
     $("r-unid").textContent = num1.format(Math.floor(unid));

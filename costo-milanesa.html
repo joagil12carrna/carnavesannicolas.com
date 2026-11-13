@@ -181,6 +181,29 @@
   .ticket-foot button { flex: 1; }
   .toast { font-size: 13px; color: var(--ok); padding: 0 20px 14px; min-height: 1em; margin: -6px 0 0; }
 
+  /* Factor de rendimiento */
+  .factor { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .fx { font-family: var(--font-num); font-weight: 700; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .chip {
+    font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 999px; border: 1px solid currentColor; color: var(--muted);
+  }
+  .chip.ok { color: var(--ok); }
+  .chip.warn { color: var(--warn); }
+  .fx-sub { margin: 8px 0 12px; font-size: 14px; }
+  .gauge { position: relative; height: 10px; border-radius: 5px; background: var(--line); }
+  .gauge .band { position: absolute; top: 0; bottom: 0; background: var(--ok); opacity: .35; border-radius: 5px; }
+  .gauge i {
+    position: absolute; top: -4px; width: 4px; height: 18px; margin-left: -2px; border-radius: 2px;
+    background: var(--ink); transition: left .3s ease;
+  }
+  .gauge-scale { position: relative; height: 18px; margin: 4px 0 14px; font-family: var(--font-num); font-size: 11px; color: var(--muted); }
+  .gauge-scale span { position: absolute; top: 0; transform: translateX(-50%); }
+  .gauge-scale span:first-child { transform: none; }
+  .gauge-scale span:last-child { transform: translateX(-100%); }
+  .kv dd.neg { color: var(--warn); }
+  .section .hint:empty { display: none; }
+
   .note { margin-top: 18px; font-size: 13px; color: var(--muted); max-width: 70ch; }
 
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -264,7 +287,22 @@
         <p class="hint">Incluí limpiar, filetear, golpear, pasar por huevo y pan, y envasar. Horas-hombre totales: <b id="h-hh">0 h</b>.</p>
       </section>
 
-      <!-- Producción -->
+      <!-- Rendimiento -->
+      <section class="block">
+        <div class="block-head">
+          <h2>Rendimiento</h2>
+          <span class="block-total" id="t-factor">Factor 0</span>
+        </div>
+        <div class="fields">
+          <div class="field"><label for="rend-kg">Kg de milanesa que salieron</label>
+            <div class="input"><input id="rend-kg" type="number" inputmode="decimal" min="0" step="0.01" placeholder="pesalas"><span>kg</span></div></div>
+          <div class="field"><label for="rend-ref">Tu factor habitual</label>
+            <div class="input"><input id="rend-ref" type="number" inputmode="decimal" min="1" step="0.01"><span>×</span></div></div>
+        </div>
+        <p class="hint">Pesá todas las milanesas ya empanadas, antes de envasar. Factor = kg de milanesa ÷ kg de pechuga sin elaborar (ej.: 5,8 kg ÷ 3,18 kg = 1,82). El factor habitual es lo que te suele dar a vos; cada lote se compara contra ese. Si dejás vacíos los kg que salieron, se usa un estimado según los insumos.</p>
+      </section>
+
+      <!-- Ganancia -->
       <section class="block">
         <div class="block-head">
           <h2>Ganancia</h2>
@@ -273,7 +311,7 @@
           <div class="field"><label for="prod-ganancia">Ganancia sobre costo</label>
             <div class="input"><input id="prod-ganancia" type="number" inputmode="decimal" min="0" step="1"><span>%</span></div></div>
         </div>
-        <p class="hint">Porcentaje que le sumás al costo para sacar el precio de venta. Los kilos de milanesa se calculan con pechuga + pan rallado + huevo hidratado.</p>
+        <p class="hint">Porcentaje que le sumás al costo para sacar el precio de venta.</p>
       </section>
 
       <p class="note">Los valores precargados son un ejemplo para ver cómo funciona; reemplazalos por tus precios. Lo que cargues queda guardado en este navegador.</p>
@@ -298,13 +336,39 @@
         </div>
 
         <div class="section">
+          <h3>Factor de rendimiento <span class="tag est" id="f-est" hidden>estimado</span></h3>
+          <div class="factor">
+            <span class="fx" id="f-val">0</span>
+            <span class="chip" id="f-chip">–</span>
+          </div>
+          <p class="fx-sub" id="f-sub"></p>
+          <div class="gauge" aria-hidden="true">
+            <div class="band" id="f-band"></div>
+            <i id="f-mark"></i>
+          </div>
+          <div class="gauge-scale" aria-hidden="true">
+            <span id="s0" style="left:0">1,00</span><span id="s1"></span><span id="s2"></span><span id="s3" style="left:100%"></span>
+          </div>
+          <dl class="kv">
+            <dt>Rebozado que se pegó</dt><dd id="f-reb">0 kg</dd>
+            <dt>Rebozado en el peso final</dt><dd id="f-pct">0%</dd>
+            <dt class="f-med">Esperado según insumos</dt><dd class="f-med" id="f-teo">0 kg</dd>
+            <dt class="f-med">Diferencia</dt><dd class="f-med" id="f-dif">0 kg</dd>
+            <dt>Pechuga por kg de milanesa</dt><dd id="f-carne">0 kg</dd>
+            <dt>Para 10 kg de milanesa</dt><dd id="f-plan">0 kg de pechuga</dd>
+            <dt>Contra tu factor habitual</dt><dd id="f-vsref">0 kg</dd>
+          </dl>
+          <p class="hint" id="f-nota"></p>
+        </div>
+
+        <div class="section">
           <h3>¿En qué se va la plata?</h3>
           <div class="bar" id="r-bar"></div>
           <ul class="legend" id="r-legend"></ul>
         </div>
 
         <div class="section">
-          <h3>Rendimiento del lote</h3>
+          <h3>Resultado del lote</h3>
           <dl class="kv">
             <dt>Pechuga comprada</dt><dd id="r-compra">0 kg</dd>
             <dt>Milanesa obtenida</dt><dd id="r-term">0 kg</dd>
@@ -326,16 +390,19 @@
   var KEY = "carnave-costeo-milanesa-v2";
 
   var EJEMPLO = {
-    "pech-kg": 10, "pech-precio": 7800,
+    "pech-kg": 3.18, "pech-precio": 7800,
     "huevo-g": 150, "huevo-precio": 16000, "huevo-bolsa": 1,
-    "pan-kg": 2.5, "pan-precio": 3200,
-    "mo-horas": 2.5, "mo-personas": 1, "mo-valor": 5500,
-    "prod-ganancia": 40
+    "pan-kg": 2, "pan-precio": 3200,
+    "mo-horas": 1, "mo-personas": 1, "mo-valor": 5500,
+    "rend-kg": 5.8, "rend-ref": 1.82, "prod-ganancia": 40
   };
 
   var CAMPOS = ["pech-kg","pech-precio","huevo-g","huevo-precio","huevo-bolsa",
     "pan-kg","pan-precio","mo-horas","mo-personas","mo-valor",
-    "prod-ganancia"];
+    "rend-kg","rend-ref","prod-ganancia"];
+
+  // Tolerancia alrededor del factor habitual para considerar el lote "normal"
+  var F_TOL = 0.05;
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -378,8 +445,15 @@
 
     var total = cPech + cHuevo + cPan + cMo;
 
-    // Kilos producidos: pechuga + pan rallado + huevo (polvo + 3 partes de agua)
-    var term = pkg + panKg + hKg * 4;
+    // Kilos producidos: lo pesado, o estimado con pechuga + pan rallado + huevo (polvo + 3 partes de agua)
+    var teorico = pkg + panKg + hKg * 4;
+    var kgReal = parseFloat($("rend-kg").value);
+    var medido = isFinite(kgReal) && kgReal > 0;
+    var term = medido ? kgReal : teorico;
+
+    // Factor de rendimiento: kg de milanesa por kg de pechuga sin elaborar
+    var factor = pkg > 0 ? term / pkg : 0;
+    var reb = term - pkg;
 
     var costoKg = term > 0 ? total / term : 0;
     var gan = Math.max(val("prod-ganancia"), 0);
@@ -406,6 +480,64 @@
     $("r-term").textContent = kg(term);
     $("r-gan").textContent = $$(precioKg * term - total);
 
+    // Factor
+    var f2 = new Intl.NumberFormat("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    var ref = val("rend-ref") > 1 ? val("rend-ref") : 0;
+    var refMin = ref * (1 - F_TOL), refMax = ref * (1 + F_TOL);
+    var vsKg = ref > 0 ? term - ref * pkg : 0;
+    var nivel, nota;
+    if (!(factor > 0)) { nivel = ["–", ""]; nota = ""; }
+    else if (factor < 1) {
+      nivel = ["Bajo", "warn"];
+      nota = "Salió menos milanesa que carne: se perdió peso en el proceso o hay un error al pesar. Revisalo.";
+    } else if (!ref) {
+      nivel = ["Sin referencia", ""];
+      nota = "Cargá tu factor habitual para comparar este lote.";
+    } else if (factor < refMin) {
+      nivel = ["Bajo", "warn"];
+      nota = "Rindió menos que tu habitual (" + f2.format(ref) + "): salieron " + kg(-vsKg) + " menos de milanesa, unos " + $$(-vsKg * precioKg) + " de venta. Fijate si el pan se cae al manipular o si se empanó más fino.";
+    } else if (factor <= refMax) {
+      nivel = ["Normal", "ok"];
+      nota = "En línea con tu factor habitual (" + f2.format(ref) + ").";
+    } else {
+      nivel = ["Alto", "warn"];
+      nota = "Rindió más que tu habitual (" + f2.format(ref) + "): " + kg(vsKg) + " más de milanesa. Lleva más rebozado por kilo de carne; controlá que no se note en la calidad.";
+    }
+    $("t-factor").textContent = "Factor " + f2.format(factor);
+    $("f-val").textContent = f2.format(factor);
+    $("f-chip").textContent = nivel[0];
+    $("f-chip").className = "chip " + nivel[1];
+    $("f-est").hidden = medido;
+    $("f-sub").textContent = pkg > 0
+      ? "Por cada 1 kg de pechuga sin elaborar salieron " + f2.format(factor) + " kg de milanesa."
+      : "Cargá los kg de pechuga para calcular el factor.";
+    var gMax = Math.ceil(Math.max(2, refMax + 0.2, factor + 0.1) * 5) / 5;
+    var pct = function (v) { return Math.min(Math.max((v - 1) / (gMax - 1), 0), 1) * 100; };
+    $("f-mark").style.left = pct(factor) + "%";
+    $("f-band").hidden = !ref;
+    $("f-band").style.left = pct(refMin) + "%";
+    $("f-band").style.width = (pct(refMax) - pct(refMin)) + "%";
+    $("s1").hidden = $("s2").hidden = !ref;
+    $("s1").style.left = pct(refMin) + "%"; $("s1").textContent = f2.format(refMin);
+    $("s2").style.left = pct(refMax) + "%"; $("s2").textContent = f2.format(refMax);
+    $("s3").textContent = f2.format(gMax);
+    $("f-vsref").textContent = ref ? (vsKg > 0 ? "+" : "") + kg(vsKg) : "–";
+    $("f-vsref").classList.toggle("neg", vsKg < 0);
+    $("f-reb").textContent = kg(reb) + " (" + (reb >= 0 ? "+" : "") + num1.format(pkg > 0 ? reb / pkg * 100 : 0) + "%)";
+    $("f-pct").textContent = num1.format(term > 0 ? reb / term * 100 : 0) + "%";
+    $("f-teo").textContent = kg(teorico);
+    var dif = term - teorico;
+    $("f-dif").textContent = (dif > 0 ? "+" : "") + kg(dif);
+    $("f-dif").classList.toggle("neg", dif < 0);
+    Array.prototype.forEach.call(document.querySelectorAll(".f-med"), function (el) { el.hidden = !medido; });
+    $("f-carne").textContent = kg(factor > 0 ? 1 / factor : 0);
+    $("f-plan").textContent = kg(factor > 0 ? 10 / factor : 0) + " de pechuga";
+    var extra = "";
+    if (!medido) extra = "Es un estimado: pesá las milanesas y cargá los kg para ver el factor real.";
+    else if (dif < -0.05) extra = "Faltan " + kg(-dif) + " respecto de lo que deberían sumar los insumos: pan o huevo que no se pegó y se tiró.";
+    else if (dif > 0.05) extra = "Pesó " + kg(dif) + " más que los insumos: revisá el pan rallado cargado o si el huevo llevó más agua.";
+    $("f-nota").textContent = (nota + " " + extra).trim();
+
     var partes = [
       ["Pechuga", cPech, "--seg-1"], ["Huevo", cHuevo, "--seg-2"], ["Pan rallado", cPan, "--seg-3"],
       ["Mano de obra", cMo, "--seg-5"]
@@ -426,8 +558,8 @@
       leg.appendChild(li);
     });
 
-    ultimo = { total: total, term: term, costoKg: costoKg,
-      precioKg: precioKg, gan: gan, margen: margen, partes: partes };
+    ultimo = { total: total, term: term, costoKg: costoKg, pkg: pkg, factor: factor, medido: medido, ref: ref,
+      nivel: nivel[0], precioKg: precioKg, gan: gan, margen: margen, partes: partes };
     guardar();
   }
 
@@ -435,7 +567,8 @@
     var r = ultimo; if (!r) return "";
     var l = [
       "COSTEO DE MILANESAS – CARNAVE",
-      "Lote: " + kg(r.term) + " de milanesa",
+      "Lote: " + kg(r.pkg) + " de pechuga → " + kg(r.term) + " de milanesa" + (r.medido ? "" : " (estimado)"),
+      "Factor de rendimiento: " + num1.format(r.factor) + " (" + r.nivel + (r.ref ? ", habitual " + num1.format(r.ref) : "") + ")",
       "",
       "Costo del lote: " + $$(r.total),
       "Costo por kg: " + $$(r.costoKg),
@@ -475,7 +608,7 @@
 
   $("btn-ejemplo").addEventListener("click", function () { cargar(EJEMPLO); toast("Ejemplo cargado."); });
   $("btn-limpiar").addEventListener("click", function () {
-    var vacio = { "huevo-bolsa": 1, "prod-ganancia": 40 };
+    var vacio = { "huevo-bolsa": 1, "rend-ref": $("rend-ref").value, "prod-ganancia": 40 };
     cargar(vacio);
     toast("Planilla en blanco.");
   });

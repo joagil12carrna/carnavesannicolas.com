@@ -1,48 +1,33 @@
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { C, fontFamily } from "../theme";
+import { timing } from "../timeline";
 
 /**
- * Subtítulos estilo TikTok: aparecen palabra por palabra, de a 3, la palabra activa
- * se pinta y "rebota". Las palabras en MAYÚSCULAS se resaltan en rosa.
+ * Subtítulos estilo TikTok sincronizados con la voz (timeline.json):
+ * cada palabra aparece cuando se dice, la activa se pinta amarilla y rebota,
+ * las palabras en MAYÚSCULAS salen gigantes en rosa.
  */
-export const Caption: React.FC<{
-  text: string;
-  start?: number;
-  wordFrames?: number;
-  top?: number;
-  chunk?: number;
-}> = ({ text, start = 0, wordFrames = 7, top = 1230, chunk = 3 }) => {
-  const frame = useCurrentFrame() - start;
+export const Caption: React.FC<{ id: string; top?: number }> = ({ id, top = 1230 }) => {
+  const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  if (frame < 0) return null;
-  // "/" marca cortes manuales de frase; si no hay, se agrupa de a `chunk` palabras
-  const groups: string[][] = text.includes("/")
-    ? text.split("/").map((g) => g.trim().split(" "))
-    : text.split(" ").reduce<string[][]>((acc, w, i) => {
-        if (i % chunk === 0) acc.push([]);
-        acc[acc.length - 1].push(w);
-        return acc;
-      }, []);
-  const words = groups.flat();
-  const idx = Math.min(words.length - 1, Math.floor(frame / wordFrames));
-  let chunkStart = 0;
-  let visible: string[] = groups[0];
-  for (const g of groups) {
-    if (idx < chunkStart + g.length) { visible = g; break; }
-    chunkStart += g.length;
-  }
+  const words = timing(id).words;
+  let idx = -1;
+  words.forEach((w, i) => {
+    if (w.f <= frame) idx = i;
+  });
+  if (idx < 0) return null;
+  const chunk = words[idx].chunk;
   return (
-    <div style={{ position: "absolute", left: 60, right: 60, top, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0 46px" }}>
-      {visible.map((w, i) => {
-        const wi = chunkStart + i;
-        if (wi > idx) return null;
-        const local = frame - wi * wordFrames;
-        const s = spring({ frame: local, fps, config: { damping: 9, stiffness: 220, mass: 0.6 } });
+    <div style={{ position: "absolute", left: 50, right: 50, top, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0 52px" }}>
+      {words.map((w, wi) => {
+        if (w.chunk !== chunk || wi > idx) return null;
+        const local = frame - w.f;
+        const s = spring({ frame: local, fps, config: { damping: 13, stiffness: 240, mass: 0.6 } });
         const active = wi === idx;
-        const loud = w === w.toUpperCase() && /[A-ZÁÉÍÓÚÑ]{2,}/.test(w);
+        const loud = w.t === w.t.toUpperCase() && /[A-ZÁÉÍÓÚÑ]{2,}/.test(w.t);
         const color = loud ? C.pink : active ? C.yellow : "white";
-        const rot = interpolate(s, [0, 1], [i % 2 ? 10 : -10, i % 2 ? 2 : -2]);
+        const rot = interpolate(s, [0, 1], [wi % 2 ? 10 : -10, wi % 2 ? 2 : -2]);
         return (
           <span
             key={wi}
@@ -58,7 +43,7 @@ export const Caption: React.FC<{
               display: "inline-block",
             }}
           >
-            {w}
+            {w.t}
           </span>
         );
       })}

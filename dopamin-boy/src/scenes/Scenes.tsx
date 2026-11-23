@@ -7,6 +7,7 @@ import { Caption } from "../components/Caption";
 import { DayChip, EmojiRain, GlitchBars, NeonBurst, Stamp } from "../components/Effects";
 import { Phone } from "../components/Phone";
 import { Notification } from "../components/Notification";
+import { timing } from "../timeline";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const Center: React.FC<{ top: number; children: React.ReactNode; style?: React.CSSProperties }> = ({ top, children, style }) => (
@@ -27,7 +28,7 @@ export const S1Hook: React.FC = () => {
         <DopaminBoy mood="hyped" spiral glow={C.cyan} size={760} />
       </Center>
       <DayChip day={day} />
-      <Caption text="Dopamin Boy hace / 150 DÍAS / que no puede / dejar el celular" start={4} wordFrames={7} />
+      <Caption id="s1" />
     </AbsoluteFill>
   );
 };
@@ -59,7 +60,7 @@ export const S2Night: React.FC = () => {
         <div style={{ position: "absolute", left: -40, right: -40, top: 1080, height: 260, background: "#3D5AFE", borderTop: "10px solid black", borderRadius: "80px 80px 0 0" }} />
       </AbsoluteFill>
       <DayChip day={150} />
-      <Caption text="Son las 3:47 AM / y Dopamin Boy / sigue scrolleando" wordFrames={8} />
+      <Caption id="s2" />
     </AbsoluteFill>
   );
 };
@@ -97,7 +98,7 @@ export const S3Notifs: React.FC = () => {
         <div style={{ position: "absolute", right: 70, top: 1000 - last * 8, fontFamily, fontSize: 120, color: C.lime, WebkitTextStroke: "12px black", paintOrder: "stroke fill", opacity: 1 - last / 14 }}>+10</div>
       )}
       <Center top={1130}><DopamineBar value={bar} /></Center>
-      <Caption text="Cada notificación / le da un golpe / de DOPAMINA" wordFrames={9} top={1330} />
+      <Caption id="s3" top={1330} />
     </AbsoluteFill>
   );
 };
@@ -140,7 +141,7 @@ export const S4Videos: React.FC = () => {
         <DopaminBoy mood="hyped" spiral size={300} glow={cur.bg} />
       </div>
       <div style={{ position: "absolute", left: 60, top: 620, fontSize: 150, transform: `translateY(${-((f * 18) % 300)}px)`, opacity: 0.9 }}>👆</div>
-      <Caption text="Dopamin Boy mira / 900 videos / POR DÍA" wordFrames={9} />
+      <Caption id="s4" />
     </AbsoluteFill>
   );
 };
@@ -169,7 +170,7 @@ export const S5More: React.FC = () => {
       <div style={{ position: "absolute", left: 80, top: 1060 }}><Stamp at={56} color={C.lime} size={160} rotate={-10}>x8</Stamp></div>
       <div style={{ position: "absolute", right: 60, top: 1020 }}><Stamp at={80} color={C.pink} size={190} rotate={10}>x16</Stamp></div>
       <Center top={180}><DopamineBar value={96 + Math.sin(f) * 4} label="MÁS... MÁS..." /></Center>
-      <Caption text="Pero cada vez / necesita MÁS / para sentir lo mismo" wordFrames={8} top={1330} />
+      <Caption id="s5" top={1330} />
     </AbsoluteFill>
   );
 };
@@ -193,7 +194,7 @@ export const S6Crash: React.FC = () => {
       </AbsoluteFill>
       <Center top={200}><DopamineBar value={bar} mode={bar < 40 ? "danger" : "neon"} /></Center>
       {f > 95 && <Center top={430}><Stamp color={C.red} size={110}>⚠️ VACÍO ⚠️</Stamp></Center>}
-      <Caption text="Hasta que un día / la dopamina / SE ACABÓ" wordFrames={10} />
+      <Caption id="s6" />
     </AbsoluteFill>
   );
 };
@@ -219,7 +220,7 @@ export const S7Nothing: React.FC = () => {
       </div>
       <GlitchBars intensity={1} />
       <Center top={1120}><DopamineBar value={f % 10 < 5 ? 3 : 0} mode="danger" style={{ opacity: 0.9 }} /></Center>
-      <Caption text="Dopamin Boy / ya no siente / NADA" wordFrames={10} top={1340} />
+      <Caption id="s7" top={1340} />
     </AbsoluteFill>
   );
 };
@@ -240,7 +241,7 @@ export const S8Battery: React.FC = () => {
         </div>
       </Center>
       <Center top={900}><div style={{ fontFamily, fontSize: 150, color: dead ? "#666" : C.red, WebkitTextStroke: "8px black", paintOrder: "stroke fill" }}>{dead ? "0%" : "1%"}</div></Center>
-      <Caption text="Y el celular / se quedó sin / BATERÍA" wordFrames={8} />
+      <Caption id="s8" />
     </AbsoluteFill>
   );
 };
@@ -277,7 +278,7 @@ export const S9Outside: React.FC = () => {
           <div style={{ fontFamily, fontSize: 66, background: C.ink, color: C.yellow, padding: "18px 40px", borderRadius: 30, border: "8px solid #FFD000", boxShadow: "0 0 50px #FFD000" }}>🏆 LOGRO DESBLOQUEADO</div>
         </Center>
       )}
-      <Caption text="Por primera vez / en 150 días / Dopamin Boy / salió AFUERA" wordFrames={9} top={1420} />
+      <Caption id="s9" top={1420} />
     </AbsoluteFill>
   );
 };
@@ -285,12 +286,10 @@ export const S9Outside: React.FC = () => {
 /* 10 · EL LOOP */
 export const S10Loop: React.FC = () => {
   const f = useCurrentFrame();
-  const { fps } = useVideoConfig();
   const zoom = interpolate(f, [55, 105], [1, 3.2], { ...clamp, easing: Easing.in(Easing.cubic) });
-  const spiral = f > 75;
+  const spiral = f > 75 && Math.floor(f / 5) % 2 === 0; // indeciso: alterna espiral / normal
   const vib = f > 30 && f < 105 ? Math.sin(f * 3) * 10 : 0;
   const neon = interpolate(f, [70, 105], [0, 1], clamp);
-  const q = spring({ frame: f - 108, fps, config: { damping: 9 } });
   return (
     <AbsoluteFill style={{ transform: shake(f, f > 70 ? 8 : 0) }}>
       <AbsoluteFill style={{ background: "linear-gradient(#FFB37A,#FF8A5B)" }} />
@@ -306,14 +305,74 @@ export const S10Loop: React.FC = () => {
       {f > 30 && f < 75 && (
         <div style={{ position: "absolute", left: 300, top: 930, fontFamily, fontSize: 130, color: "white", WebkitTextStroke: "12px black", paintOrder: "stroke fill", transform: `rotate(-8deg) scale(${1 + Math.sin(f) * 0.08})` }}>*DING*</div>
       )}
-      {f < 100 && <Caption text="Pero entonces / el celular / VIBRÓ" wordFrames={8} />}
-      {f > 108 && (
-        <Center top={1180} style={{ transform: `scale(${q})` }}>
-          <div style={{ fontFamily, fontSize: 104, color: "white", textAlign: "center", WebkitTextStroke: "14px black", paintOrder: "stroke fill", lineHeight: 1.1, padding: "0 50px" }}>
-            ¿Y VOS CUÁNTOS <span style={{ color: C.yellow }}>DÍAS</span> LLEVÁS? 👀
+      <Caption id="s10" />
+    </AbsoluteFill>
+  );
+};
+
+/* 11 · FINAL INTERACTIVO: el video se "pausa" y el público elige comentando */
+const Option: React.FC<{ n: string; label: string; emoji: string; color: string; at: number; top: number; side: number }> = ({ n, label, emoji, color, at, top, side }) => {
+  const f = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  if (f < at) return null;
+  const s = spring({ frame: f - at, fps, config: { damping: 9, stiffness: 180 } });
+  const pulse = 1 + Math.sin((f + side * 15) / 5) * 0.035;
+  return (
+    <div style={{
+      position: "absolute", left: 70, right: 70, top, height: 170, borderRadius: 40, background: color, border: "9px solid black",
+      boxShadow: "0 16px 0 black", display: "flex", alignItems: "center", gap: 26, padding: "0 34px", fontFamily,
+      transform: `translateX(${interpolate(s, [0, 1], [side * 1100, 0])}px) scale(${pulse}) rotate(${side * -1.5}deg)`,
+    }}>
+      <div style={{ fontSize: 120, color: "white", WebkitTextStroke: "12px black", paintOrder: "stroke fill", width: 110, textAlign: "center" }}>{n}</div>
+      <div style={{ flex: 1, fontSize: 64, lineHeight: 1, color: C.ink }}>{label}</div>
+      <div style={{ fontSize: 110 }}>{emoji}</div>
+    </div>
+  );
+};
+
+export const S11Choice: React.FC = () => {
+  const f = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = timing("s11");
+  const [, pQ, p1, p2, pC] = t.parts;
+  const undecided = Math.floor(f / 6) % 2 === 0;
+  const title = spring({ frame: f - pQ[0], fps, config: { damping: 10 } });
+  const timer = interpolate(f, [pC[0], t.duration - 15], [1, 0], clamp);
+  const pauseIcon = interpolate(f, [0, 4, 22, 30], [0, 1, 1, 0], clamp);
+  return (
+    <AbsoluteFill>
+      <AbsoluteFill style={{ filter: "saturate(.6) brightness(.55) blur(6px)" }}>
+        <NeonBurst a={C.pink} b={C.violet} speed={0} />
+      </AbsoluteFill>
+      <Center top={410} style={{ transform: `scale(${1 + Math.sin(f / 8) * 0.02})` }}>
+        <DopaminBoy mood={undecided ? "hyped" : "shock"} spiral={undecided} glow={undecided ? C.cyan : undefined} size={370} />
+      </Center>
+      {/* ícono de pausa: "el video se frenó, te toca a vos" */}
+      <AbsoluteFill style={{ display: "flex", alignItems: "center", justifyContent: "center", opacity: pauseIcon }}>
+        <div style={{ display: "flex", gap: 50, transform: `scale(${0.8 + pauseIcon * 0.2})` }}>
+          <div style={{ width: 110, height: 330, background: "white", borderRadius: 24, border: "10px solid black" }} />
+          <div style={{ width: 110, height: 330, background: "white", borderRadius: 24, border: "10px solid black" }} />
+        </div>
+      </AbsoluteFill>
+      {f >= pQ[0] && (
+        <Center top={175} style={{ transform: `scale(${title}) rotate(-3deg)` }}>
+          <div style={{ fontFamily, fontSize: 92, color: C.yellow, WebkitTextStroke: "14px black", paintOrder: "stroke fill", textAlign: "center", lineHeight: 1, textShadow: "0 12px 0 black" }}>
+            ¿QUÉ HACE<br />DOPAMIN BOY?
           </div>
         </Center>
       )}
+      <Option n="1" label="AGARRA EL CELULAR" emoji="📱" color={C.cyan} at={p1[0]} top={890} side={-1} />
+      <Option n="2" label="LO TIRA POR LA VENTANA" emoji="🪟" color={C.pink} at={p2[0]} top={1090} side={1} />
+      {f >= pC[0] && (
+        <>
+          <div style={{ position: "absolute", left: 90, right: 230, top: 1320, height: 30, borderRadius: 15, background: "rgba(0,0,0,.6)", border: "5px solid black" }}>
+            <div style={{ width: `${timer * 100}%`, height: "100%", borderRadius: 15, background: timer < 0.3 ? C.red : C.yellow }} />
+          </div>
+          {/* apunta al botón de comentarios de TikTok (columna derecha) */}
+          <div style={{ position: "absolute", right: 40 - Math.abs(Math.sin(f / 4)) * 30, top: 1270, fontSize: 130 }}>👉</div>
+        </>
+      )}
+      <Caption id="s11" top={1420} />
     </AbsoluteFill>
   );
 };

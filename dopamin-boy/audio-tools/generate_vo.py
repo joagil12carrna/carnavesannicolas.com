@@ -3,12 +3,14 @@
 - en qué frame arranca cada parte de la voz
 - en qué frame aparece cada palabra del subtítulo (sincronizado con la voz)
 
-Uso: python generate_vo.py <modelo.onnx>
+Uso:
+  python generate_vo.py <modelo.onnx>                         # v1 (voz es_AR)
+  python generate_vo.py <modelo.onnx> --script v2 --pitch 0.94  # v2 (voz masculina, más grave)
 
 Texto hablado: "|" separa partes con una pausa dramática.
 Subtítulo: "|" debe coincidir con las partes de la voz; "/" corta el subtítulo en grupos.
 """
-import json, sys, wave
+import json, wave
 from pathlib import Path
 from piper import PiperVoice, SynthesisConfig
 
@@ -61,37 +63,49 @@ def word_timings(caption: str, part_starts, part_lens):
     return words
 
 
-def main(model: str):
+def main(model: str, lines, prefix: str, timeline_path: Path, pitch: float, tail: int, pause: float = PAUSE):
     voice = PiperVoice.load(model)
-    rate = voice.config.sample_rate
+    # pitch < 1: se reproduce un poco más lento y más grave (voz de narrador)
+    rate = int(voice.config.sample_rate * pitch)
     OUT.mkdir(parents=True, exist_ok=True)
     scenes = []
-    for sid, text, caption, speed, min_frames, delay in LINES:
+    for sid, text, caption, speed, min_frames, delay in lines:
         cfg = SynthesisConfig(length_scale=speed)
         pcm = b""
         part_starts, part_lens = [], []
         for i, part in enumerate(text.split("|")):
             if i:
-                pcm += b"\x00\x00" * int(rate * PAUSE)
+                pcm += b"\x00\x00" * int(rate * pause)
             s0 = len(pcm) / 2 / rate
             for chunk in voice.synthesize(part.strip(), syn_config=cfg):
                 pcm += chunk.audio_int16_bytes
             s1 = len(pcm) / 2 / rate
             part_starts.append(delay + s0 * FPS)
             part_lens.append((s1 - s0) * FPS)
-        with wave.open(str(OUT / f"vo_{sid}.wav"), "wb") as w:
+        with wave.open(str(OUT / f"{prefix}{sid}.wav"), "wb") as w:
             w.setnchannels(1); w.setsampwidth(2); w.setframerate(rate); w.writeframes(pcm)
         secs = len(pcm) / 2 / rate
         vo_frames = int(round(secs * FPS))
-        dur = max(min_frames, delay + vo_frames + 12)
+        dur = max(min_frames, delay + vo_frames + tail)
         scenes.append({
             "id": sid, "duration": dur, "voDelay": delay, "voFrames": vo_frames,
             "parts": [[round(a), round(a + b)] for a, b in zip(part_starts, part_lens)],
             "words": word_timings(caption, part_starts, part_lens),
         })
         print(f"{sid}: voz {secs:.2f}s -> escena {dur} frames")
-    (ROOT / "src" / "timeline.json").write_text(json.dumps({"fps": FPS, "scenes": scenes}, ensure_ascii=False, indent=1))
+    timeline_path.parent.mkdir(parents=True, exist_ok=True)
+    timeline_path.write_text(json.dumps({"fps": FPS, "scenes": scenes}, ensure_ascii=False, indent=1))
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("model")
+    ap.add_argument("--script", default="v1", choices=["v1", "v2"])
+    ap.add_argument("--pitch", type=float, default=1.0)
+    a = ap.parse_args()
+    if a.script == "v2":
+        from script_v2 import LINES as L2
+        main(a.model, L2, "vo2_", ROOT / "src" / "v2" / "timeline.json", a.pitch, tail=5, pause=0.22)
+    else:
+        main(a.model, LINES, "vo_", ROOT / "src" / "timeline.json", a.pitch, tail=12)

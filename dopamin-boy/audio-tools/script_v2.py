@@ -1,0 +1,35 @@
+"""Guion v2: estilo "guía de supervivencia" (narrador le habla al espectador, reglas concretas,
+niveles para BAJAR la dopamina y final cortado que empalma con el inicio → loop).
+
+id, voz ("|" = pausa), subtítulo ("|" = mismas partes que la voz, "/" = corte de grupo), velocidad, frames mínimos, delay
+"""
+LINES = [
+    ("h1", "Si tu cerebro recibe esta dopamina... | tienes que alejarte.",
+           "Si tu cerebro / recibe ESTA / dopamina | tienes que / ALEJARTE", 0.8, 0, 0),
+    ("h2", "Con esta otra... | nunca.",
+           "Con esta otra | NUNCA", 0.8, 0, 2),
+    ("h3", "Si te equivocas... | terminas como él.",
+           "Si te equivocas | terminas / como ÉL", 0.82, 0, 2),
+    ("i1", "Este es Dopamin Boy. | Lleva ciento cincuenta días sin soltar el celular.",
+           "Este es / DOPAMIN BOY | Lleva 150 días / sin soltar / el celular", 0.82, 0, 4),
+    ("i2", "Pesa más de ciento veinte kilos... | y escrolea más rápido que un caballo de carreras.",
+           "Pesa más de / 120 KILOS | y scrollea / más rápido / que un caballo / de carreras", 0.8, 0, 3),
+    ("goal", "Hoy tiene un objetivo. | Bajar su dopamina de cien a cero... | antes de que termine este video. | Y tú vas a ayudarlo.",
+             "Hoy tiene / un OBJETIVO | Bajar su dopamina / de 100 a 0 | antes de que / termine / este video | Y TÚ / vas a ayudarlo", 0.82, 0, 4),
+    ("fast", "Esta es la dopamina rápida. | Videos cortos, notificaciones, likes. | Te da un pico enorme... | y te deja más vacío que antes.",
+             "Esta es / la dopamina / RÁPIDA | Videos cortos / notificaciones / likes | Te da un pico / ENORME | y te deja / más VACÍO / que antes", 0.8, 0, 4),
+    ("you", "Y tú también la tienes. | Si tu pulgar ya quiere pasar al siguiente video... | es ella. | No deslices. | Dopamin Boy te necesita.",
+            "Y TÚ / también / la tienes | Si tu pulgar / ya quiere pasar / al siguiente video | es ELLA | No / DESLICES | Dopamin Boy / te NECESITA", 0.82, 0, 4),
+    ("n1", "Nivel uno. | Pon la pantalla en blanco y negro. | Sin colores, | tu cerebro se aburre.",
+           "NIVEL 1 | Pon la pantalla / en blanco / y negro | Sin colores | tu cerebro / se ABURRE", 0.82, 0, 4),
+    ("n2", "Nivel dos. | El celular duerme fuera del cuarto. | Las tres de la mañana... | es su hora favorita para atacar.",
+           "NIVEL 2 | El celular / duerme / fuera del cuarto | Las 3 / de la mañana | es su hora / favorita / para ATACAR", 0.82, 0, 4),
+    ("n3", "Nivel tres. | Cuando sientas ganas de abrir la app, espera cinco segundos. | Hagámoslo juntos. | Cinco. | Cuatro. | Tres. | Dos. | Uno.",
+           "NIVEL 3 | Cuando sientas / ganas de / abrir la app / espera / 5 segundos | Hagámoslo / JUNTOS | 5 | 4 | 3 | 2 | 1", 0.85, 410, 4),
+    ("n4", "Nivel cuatro. | Cambia dopamina rápida por dopamina lenta. | Salir, entrenar, hablar con alguien en persona. | Cuesta más... | pero dura mucho más.",
+           "NIVEL 4 | Cambia / dopamina rápida / por dopamina LENTA | Salir / entrenar / hablar con alguien / en persona | Cuesta más | pero dura / MUCHO más", 0.82, 0, 4),
+    ("fin", "Último nivel. | Este depende de ti. | Si llegaste hasta aquí sin deslizar... | tu dopamina ya bajó. | Comenta cuántas horas de pantalla tienes hoy.",
+            "ÚLTIMO NIVEL | Este depende / de TI | Si llegaste / hasta aquí / sin deslizar | tu dopamina / ya BAJÓ | Comenta / cuántas horas / de pantalla / tienes HOY", 0.82, 0, 4),
+    ("loop", "Porque la próxima vez que tu celular vibre...",
+             "Porque la próxima vez / que tu celular / VIBRE", 0.82, 0, 4),
+]

@@ -1,17 +1,17 @@
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { C, fontFamily } from "../theme";
-import { timing } from "../timeline";
+import { timing, Word } from "../timeline";
 
 /**
  * Subtítulos estilo TikTok sincronizados con la voz (timeline.json):
  * cada palabra aparece cuando se dice, la activa se pinta amarilla y rebota,
  * las palabras en MAYÚSCULAS salen gigantes en rosa.
  */
-export const Caption: React.FC<{ id: string; top?: number }> = ({ id, top = 1230 }) => {
+export const Caption: React.FC<{ id?: string; words?: Word[]; top?: number; size?: number }> = ({ id, words: given, top = 1230, size = 112 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const words = timing(id).words;
+  const words = given ?? timing(id!).words;
   let idx = -1;
   words.forEach((w, i) => {
     if (w.f <= frame) idx = i;
@@ -33,7 +33,7 @@ export const Caption: React.FC<{ id: string; top?: number }> = ({ id, top = 1230
             key={wi}
             style={{
               fontFamily,
-              fontSize: loud ? 150 : 112,
+              fontSize: loud ? size * 1.34 : size,
               lineHeight: 1.15,
               color,
               WebkitTextStroke: "14px black",

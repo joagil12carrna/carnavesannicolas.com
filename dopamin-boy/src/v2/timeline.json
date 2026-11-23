@@ -1,0 +1,1415 @@
+{
+ "fps": 30,
+ "scenes": [
+  {
+   "id": "h1",
+   "duration": 115,
+   "voDelay": 0,
+   "voFrames": 110,
+   "parts": [
+    [
+     0,
+     66
+    ],
+    [
+     72,
+     110
+    ]
+   ],
+   "words": [
+    {
+     "t": "Si",
+     "f": 0,
+     "chunk": 0
+    },
+    {
+     "t": "tu",
+     "f": 6,
+     "chunk": 0
+    },
+    {
+     "t": "cerebro",
+     "f": 13,
+     "chunk": 0
+    },
+    {
+     "t": "recibe",
+     "f": 27,
+     "chunk": 1
+    },
+    {
+     "t": "ESTA",
+     "f": 40,
+     "chunk": 1
+    },
+    {
+     "t": "dopamina",
+     "f": 50,
+     "chunk": 2
+    },
+    {
+     "t": "tienes",
+     "f": 72,
+     "chunk": 3
+    },
+    {
+     "t": "que",
+     "f": 85,
+     "chunk": 3
+    },
+    {
+     "t": "ALEJARTE",
+     "f": 94,
+     "chunk": 4
+    }
+   ]
+  },
+  {
+   "id": "h2",
+   "duration": 68,
+   "voDelay": 2,
+   "voFrames": 61,
+   "parts": [
+    [
+     2,
+     35
+    ],
+    [
+     41,
+     63
+    ]
+   ],
+   "words": [
+    {
+     "t": "Con",
+     "f": 2,
+     "chunk": 0
+    },
+    {
+     "t": "esta",
+     "f": 12,
+     "chunk": 0
+    },
+    {
+     "t": "otra",
+     "f": 23,
+     "chunk": 0
+    },
+    {
+     "t": "NUNCA",
+     "f": 41,
+     "chunk": 1
+    }
+   ]
+  },
+  {
+   "id": "h3",
+   "duration": 90,
+   "voDelay": 2,
+   "voFrames": 83,
+   "parts": [
+    [
+     2,
+     40
+    ],
+    [
+     47,
+     85
+    ]
+   ],
+   "words": [
+    {
+     "t": "Si",
+     "f": 2,
+     "chunk": 0
+    },
+    {
+     "t": "te",
+     "f": 10,
+     "chunk": 0
+    },
+    {
+     "t": "equivocas",
+     "f": 18,
+     "chunk": 0
+    },
+    {
+     "t": "terminas",
+     "f": 47,
+     "chunk": 1
+    },
+    {
+     "t": "como",
+     "f": 66,
+     "chunk": 2
+    },
+    {
+     "t": "ÉL",
+     "f": 77,
+     "chunk": 2
+    }
+   ]
+  },
+  {
+   "id": "i1",
+   "duration": 142,
+   "voDelay": 4,
+   "voFrames": 133,
+   "parts": [
+    [
+     4,
+     48
+    ],
+    [
+     55,
+     137
+    ]
+   ],
+   "words": [
+    {
+     "t": "Este",
+     "f": 4,
+     "chunk": 0
+    },
+    {
+     "t": "es",
+     "f": 15,
+     "chunk": 0
+    },
+    {
+     "t": "DOPAMIN",
+     "f": 22,
+     "chunk": 1
+    },
+    {
+     "t": "BOY",
+     "f": 39,
+     "chunk": 1
+    },
+    {
+     "t": "Lleva",
+     "f": 55,
+     "chunk": 2
+    },
+    {
+     "t": "150",
+     "f": 68,
+     "chunk": 2
+    },
+    {
+     "t": "días",
+     "f": 77,
+     "chunk": 2
+    },
+    {
+     "t": "sin",
+     "f": 88,
+     "chunk": 3
+    },
+    {
+     "t": "soltar",
+     "f": 98,
+     "chunk": 3
+    },
+    {
+     "t": "el",
+     "f": 113,
+     "chunk": 4
+    },
+    {
+     "t": "celular",
+     "f": 121,
+     "chunk": 4
+    }
+   ]
+  },
+  {
+   "id": "i2",
+   "duration": 153,
+   "voDelay": 3,
+   "voFrames": 145,
+   "parts": [
+    [
+     3,
+     58
+    ],
+    [
+     65,
+     148
+    ]
+   ],
+   "words": [
+    {
+     "t": "Pesa",
+     "f": 3,
+     "chunk": 0
+    },
+    {
+     "t": "más",
+     "f": 15,
+     "chunk": 0
+    },
+    {
+     "t": "de",
+     "f": 25,
+     "chunk": 0
+    },
+    {
+     "t": "120",
+     "f": 34,
+     "chunk": 1
+    },
+    {
+     "t": "KILOS",
+     "f": 44,
+     "chunk": 1
+    },
+    {
+     "t": "y",
+     "f": 65,
+     "chunk": 2
+    },
+    {
+     "t": "scrollea",
+     "f": 69,
+     "chunk": 2
+    },
+    {
+     "t": "más",
+     "f": 83,
+     "chunk": 3
+    },
+    {
+     "t": "rápido",
+     "f": 90,
+     "chunk": 3
+    },
+    {
+     "t": "que",
+     "f": 102,
+     "chunk": 4
+    },
+    {
+     "t": "un",
+     "f": 109,
+     "chunk": 4
+    },
+    {
+     "t": "caballo",
+     "f": 115,
+     "chunk": 4
+    },
+    {
+     "t": "de",
+     "f": 128,
+     "chunk": 5
+    },
+    {
+     "t": "carreras",
+     "f": 133,
+     "chunk": 5
+    }
+   ]
+  },
+  {
+   "id": "goal",
+   "duration": 234,
+   "voDelay": 4,
+   "voFrames": 225,
+   "parts": [
+    [
+     4,
+     50
+    ],
+    [
+     56,
+     114
+    ],
+    [
+     120,
+     179
+    ],
+    [
+     185,
+     229
+    ]
+   ],
+   "words": [
+    {
+     "t": "Hoy",
+     "f": 4,
+     "chunk": 0
+    },
+    {
+     "t": "tiene",
+     "f": 13,
+     "chunk": 0
+    },
+    {
+     "t": "un",
+     "f": 25,
+     "chunk": 1
+    },
+    {
+     "t": "OBJETIVO",
+     "f": 32,
+     "chunk": 1
+    },
+    {
+     "t": "Bajar",
+     "f": 56,
+     "chunk": 2
+    },
+    {
+     "t": "su",
+     "f": 68,
+     "chunk": 2
+    },
+    {
+     "t": "dopamina",
+     "f": 74,
+     "chunk": 2
+    },
+    {
+     "t": "de",
+     "f": 90,
+     "chunk": 3
+    },
+    {
+     "t": "100",
+     "f": 96,
+     "chunk": 3
+    },
+    {
+     "t": "a",
+     "f": 104,
+     "chunk": 3
+    },
+    {
+     "t": "0",
+     "f": 109,
+     "chunk": 3
+    },
+    {
+     "t": "antes",
+     "f": 120,
+     "chunk": 4
+    },
+    {
+     "t": "de",
+     "f": 131,
+     "chunk": 4
+    },
+    {
+     "t": "que",
+     "f": 137,
+     "chunk": 4
+    },
+    {
+     "t": "termine",
+     "f": 145,
+     "chunk": 5
+    },
+    {
+     "t": "este",
+     "f": 159,
+     "chunk": 6
+    },
+    {
+     "t": "video",
+     "f": 168,
+     "chunk": 6
+    },
+    {
+     "t": "Y",
+     "f": 185,
+     "chunk": 7
+    },
+    {
+     "t": "TÚ",
+     "f": 190,
+     "chunk": 7
+    },
+    {
+     "t": "vas",
+     "f": 198,
+     "chunk": 8
+    },
+    {
+     "t": "a",
+     "f": 206,
+     "chunk": 8
+    },
+    {
+     "t": "ayudarlo",
+     "f": 212,
+     "chunk": 8
+    }
+   ]
+  },
+  {
+   "id": "fast",
+   "duration": 250,
+   "voDelay": 4,
+   "voFrames": 241,
+   "parts": [
+    [
+     4,
+     59
+    ],
+    [
+     65,
+     131
+    ],
+    [
+     138,
+     179
+    ],
+    [
+     185,
+     245
+    ]
+   ],
+   "words": [
+    {
+     "t": "Esta",
+     "f": 4,
+     "chunk": 0
+    },
+    {
+     "t": "es",
+     "f": 14,
+     "chunk": 0
+    },
+    {
+     "t": "la",
+     "f": 21,
+     "chunk": 1
+    },
+    {
+     "t": "dopamina",
+     "f": 28,
+     "chunk": 1
+    },
+    {
+     "t": "RÁPIDA",
+     "f": 45,
+     "chunk": 2
+    },
+    {
+     "t": "Videos",
+     "f": 65,
+     "chunk": 3
+    },
+    {
+     "t": "cortos",
+     "f": 79,
+     "chunk": 3
+    },
+    {
+     "t": "notificaciones",
+     "f": 92,
+     "chunk": 4
+    },
+    {
+     "t": "likes",
+     "f": 119,
+     "chunk": 5
+    },
+    {
+     "t": "Te",
+     "f": 138,
+     "chunk": 6
+    },
+    {
+     "t": "da",
+     "f": 144,
+     "chunk": 6
+    },
+    {
+     "t": "un",
+     "f": 150,
+     "chunk": 6
+    },
+    {
+     "t": "pico",
+     "f": 157,
+     "chunk": 6
+    },
+    {
+     "t": "ENORME",
+     "f": 166,
+     "chunk": 7
+    },
+    {
+     "t": "y",
+     "f": 185,
+     "chunk": 8
+    },
+    {
+     "t": "te",
+     "f": 190,
+     "chunk": 8
+    },
+    {
+     "t": "deja",
+     "f": 196,
+     "chunk": 8
+    },
+    {
+     "t": "más",
+     "f": 206,
+     "chunk": 9
+    },
+    {
+     "t": "VACÍO",
+     "f": 214,
+     "chunk": 9
+    },
+    {
+     "t": "que",
+     "f": 225,
+     "chunk": 10
+    },
+    {
+     "t": "antes",
+     "f": 234,
+     "chunk": 10
+    }
+   ]
+  },
+  {
+   "id": "you",
+   "duration": 287,
+   "voDelay": 4,
+   "voFrames": 278,
+   "parts": [
+    [
+     4,
+     52
+    ],
+    [
+     59,
+     140
+    ],
+    [
+     146,
+     175
+    ],
+    [
+     181,
+     220
+    ],
+    [
+     227,
+     282
+    ]
+   ],
+   "words": [
+    {
+     "t": "Y",
+     "f": 4,
+     "chunk": 0
+    },
+    {
+     "t": "TÚ",
+     "f": 9,
+     "chunk": 0
+    },
+    {
+     "t": "también",
+     "f": 16,
+     "chunk": 1
+    },
+    {
+     "t": "la",
+     "f": 31,
+     "chunk": 2
+    },
+    {
+     "t": "tienes",
+     "f": 38,
+     "chunk": 2
+    },
+    {
+     "t": "Si",
+     "f": 59,
+     "chunk": 3
+    },
+    {
+     "t": "tu",
+     "f": 64,
+     "chunk": 3
+    },
+    {
+     "t": "pulgar",
+     "f": 70,
+     "chunk": 3
+    },
+    {
+     "t": "ya",
+     "f": 81,
+     "chunk": 4
+    },
+    {
+     "t": "quiere",
+     "f": 87,
+     "chunk": 4
+    },
+    {
+     "t": "pasar",
+     "f": 98,
+     "chunk": 4
+    },
+    {
+     "t": "al",
+     "f": 108,
+     "chunk": 5
+    },
+    {
+     "t": "siguiente",
+     "f": 114,
+     "chunk": 5
+    },
+    {
+     "t": "video",
+     "f": 130,
+     "chunk": 5
+    },
+    {
+     "t": "es",
+     "f": 146,
+     "chunk": 6
+    },
+    {
+     "t": "ELLA",
+     "f": 158,
+     "chunk": 6
+    },
+    {
+     "t": "No",
+     "f": 181,
+     "chunk": 7
+    },
+    {
+     "t": "DESLICES",
+     "f": 193,
+     "chunk": 8
+    },
+    {
+     "t": "Dopamin",
+     "f": 227,
+     "chunk": 9
+    },
+    {
+     "t": "Boy",
+     "f": 245,
+     "chunk": 9
+    },
+    {
+     "t": "te",
+     "f": 254,
+     "chunk": 10
+    },
+    {
+     "t": "NECESITA",
+     "f": 262,
+     "chunk": 10
+    }
+   ]
+  },
+  {
+   "id": "n1",
+   "duration": 195,
+   "voDelay": 4,
+   "voFrames": 186,
+   "parts": [
+    [
+     4,
+     36
+    ],
+    [
+     42,
+     98
+    ],
+    [
+     105,
+     140
+    ],
+    [
+     147,
+     190
+    ]
+   ],
+   "words": [
+    {
+     "t": "NIVEL",
+     "f": 4,
+     "chunk": 0
+    },
+    {
+     "t": "1",
+     "f": 26,
+     "chunk": 0
+    },
+    {
+     "t": "Pon",
+     "f": 42,
+     "chunk": 1
+    },
+    {
+     "t": "la",
+     "f": 49,
+     "chunk": 1
+    },
+    {
+     "t": "pantalla",
+     "f": 54,
+     "chunk": 1
+    },
+    {
+     "t": "en",
+     "f": 68,
+     "chunk": 2
+    },
+    {
+     "t": "blanco",
+     "f": 74,
+     "chunk": 2
+    },
+    {
+     "t": "y",
+     "f": 85,
+     "chunk": 3
+    },
+    {
+     "t": "negro",
+     "f": 89,
+     "chunk": 3
+    },
+    {
+     "t": "Sin",
+     "f": 105,
+     "chunk": 4
+    },
+    {
+     "t": "colores",
+     "f": 117,
+     "chunk": 4
+    },
+    {
+     "t": "tu",
+     "f": 147,
+     "chunk": 5
+    },
+    {
+     "t": "cerebro",
+     "f": 153,
+     "chunk": 5
+    },
+    {
+     "t": "se",
+     "f": 169,
+     "chunk": 6
+    },
+    {
+     "t": "ABURRE",
+     "f": 176,
+     "chunk": 6
+    }
+   ]
+  },
+  {
+   "id": "n2",
+   "duration": 223,
+   "voDelay": 4,
+   "voFrames": 214,
+   "parts": [
+    [
+     4,
+     36
+    ],
+    [
+     43,
+     107
+    ],
+    [
+     114,
+     154
+    ],
+    [
+     161,
+     218
+    ]
+   ],
+   "words": [
+    {
+     "t": "NIVEL",
+     "f": 4,
+     "chunk": 0
+    },
+    {
+     "t": "2",
+     "f": 27,
+     "chunk": 0
+    },
+    {
+     "t": "El",
+     "f": 43,
+     "chunk": 1
+    },
+    {
+     "t": "celular",
+     "f": 49,
+     "chunk": 1
+    },
+    {
+     "t": "duerme",
+     "f": 63,
+     "chunk": 2
+    },
+    {
+     "t": "fuera",
+     "f": 76,
+     "chunk": 3
+    },
+    {
+     "t": "del",
+     "f": 87,
+     "chunk": 3
+    },
+    {
+     "t": "cuarto",
+     "f": 95,
+     "chunk": 3
+    },
+    {
+     "t": "Las",
+     "f": 114,
+     "chunk": 4
+    },
+    {
+     "t": "3",
+     "f": 122,
+     "chunk": 4
+    },
+    {
+     "t": "de",
+     "f": 127,
+     "chunk": 5
+    },
+    {
+     "t": "la",
+     "f": 134,
+     "chunk": 5
+    },
+    {
+     "t": "mañana",
+     "f": 141,
+     "chunk": 5
+    },
+    {
+     "t": "es",
+     "f": 161,
+     "chunk": 6
+    },
+    {
+     "t": "su",
+     "f": 167,
+     "chunk": 6
+    },
+    {
+     "t": "hora",
+     "f": 173,
+     "chunk": 6
+    },
+    {
+     "t": "favorita",
+     "f": 182,
+     "chunk": 7
+    },
+    {
+     "t": "para",
+     "f": 197,
+     "chunk": 8
+    },
+    {
+     "t": "ATACAR",
+     "f": 206,
+     "chunk": 8
+    }
+   ]
+  },
+  {
+   "id": "n3",
+   "duration": 410,
+   "voDelay": 4,
+   "voFrames": 340,
+   "parts": [
+    [
+     4,
+     40
+    ],
+    [
+     47,
+     142
+    ],
+    [
+     148,
+     194
+    ],
+    [
+     200,
+     223
+    ],
+    [
+     230,
+     254
+    ],
+    [
+     261,
+     287
+    ],
+    [
+     294,
+     315
+    ],
+    [
+     322,
+     344
+    ]
+   ],
+   "words": [
+    {
+     "t": "NIVEL",
+     "f": 4,
+     "chunk": 0
+    },
+    {
+     "t": "3",
+     "f": 29,
+     "chunk": 0
+    },
+    {
+     "t": "Cuando",
+     "f": 47,
+     "chunk": 1
+    },
+    {
+     "t": "sientas",
+     "f": 59,
+     "chunk": 1
+    },
+    {
+     "t": "ganas",
+     "f": 72,
+     "chunk": 2
+    },
+    {
+     "t": "de",
+     "f": 82,
+     "chunk": 2
+    },
+    {
+     "t": "abrir",
+     "f": 88,
+     "chunk": 3
+    },
+    {
+     "t": "la",
+     "f": 98,
+     "chunk": 3
+    },
+    {
+     "t": "app",
+     "f": 104,
+     "chunk": 3
+    },
+    {
+     "t": "espera",
+     "f": 111,
+     "chunk": 4
+    },
+    {
+     "t": "5",
+     "f": 123,
+     "chunk": 5
+    },
+    {
+     "t": "segundos",
+     "f": 127,
+     "chunk": 5
+    },
+    {
+     "t": "Hagámoslo",
+     "f": 148,
+     "chunk": 6
+    },
+    {
+     "t": "JUNTOS",
+     "f": 175,
+     "chunk": 7
+    },
+    {
+     "t": "5",
+     "f": 200,
+     "chunk": 8
+    },
+    {
+     "t": "4",
+     "f": 230,
+     "chunk": 9
+    },
+    {
+     "t": "3",
+     "f": 261,
+     "chunk": 10
+    },
+    {
+     "t": "2",
+     "f": 294,
+     "chunk": 11
+    },
+    {
+     "t": "1",
+     "f": 322,
+     "chunk": 12
+    }
+   ]
+  },
+  {
+   "id": "n4",
+   "duration": 292,
+   "voDelay": 4,
+   "voFrames": 283,
+   "parts": [
+    [
+     4,
+     37
+    ],
+    [
+     44,
+     118
+    ],
+    [
+     125,
+     203
+    ],
+    [
+     209,
+     237
+    ],
+    [
+     244,
+     287
+    ]
+   ],
+   "words": [
+    {
+     "t": "NIVEL",
+     "f": 4,
+     "chunk": 0
+    },
+    {
+     "t": "4",
+     "f": 27,
+     "chunk": 0
+    },
+    {
+     "t": "Cambia",
+     "f": 44,
+     "chunk": 1
+    },
+    {
+     "t": "dopamina",
+     "f": 56,
+     "chunk": 2
+    },
+    {
+     "t": "rápida",
+     "f": 72,
+     "chunk": 2
+    },
+    {
+     "t": "por",
+     "f": 84,
+     "chunk": 3
+    },
+    {
+     "t": "dopamina",
+     "f": 92,
+     "chunk": 3
+    },
+    {
+     "t": "LENTA",
+     "f": 108,
+     "chunk": 3
+    },
+    {
+     "t": "Salir",
+     "f": 125,
+     "chunk": 4
+    },
+    {
+     "t": "entrenar",
+     "f": 135,
+     "chunk": 5
+    },
+    {
+     "t": "hablar",
+     "f": 150,
+     "chunk": 6
+    },
+    {
+     "t": "con",
+     "f": 162,
+     "chunk": 6
+    },
+    {
+     "t": "alguien",
+     "f": 170,
+     "chunk": 6
+    },
+    {
+     "t": "en",
+     "f": 183,
+     "chunk": 7
+    },
+    {
+     "t": "persona",
+     "f": 189,
+     "chunk": 7
+    },
+    {
+     "t": "Cuesta",
+     "f": 209,
+     "chunk": 8
+    },
+    {
+     "t": "más",
+     "f": 226,
+     "chunk": 8
+    },
+    {
+     "t": "pero",
+     "f": 244,
+     "chunk": 9
+    },
+    {
+     "t": "dura",
+     "f": 255,
+     "chunk": 9
+    },
+    {
+     "t": "MUCHO",
+     "f": 265,
+     "chunk": 10
+    },
+    {
+     "t": "más",
+     "f": 278,
+     "chunk": 10
+    }
+   ]
+  },
+  {
+   "id": "fin",
+   "duration": 283,
+   "voDelay": 4,
+   "voFrames": 274,
+   "parts": [
+    [
+     4,
+     38
+    ],
+    [
+     45,
+     88
+    ],
+    [
+     95,
+     148
+    ],
+    [
+     155,
+     199
+    ],
+    [
+     206,
+     278
+    ]
+   ],
+   "words": [
+    {
+     "t": "ÚLTIMO",
+     "f": 4,
+     "chunk": 0
+    },
+    {
+     "t": "NIVEL",
+     "f": 22,
+     "chunk": 0
+    },
+    {
+     "t": "Este",
+     "f": 45,
+     "chunk": 1
+    },
+    {
+     "t": "depende",
+     "f": 56,
+     "chunk": 1
+    },
+    {
+     "t": "de",
+     "f": 73,
+     "chunk": 2
+    },
+    {
+     "t": "TI",
+     "f": 81,
+     "chunk": 2
+    },
+    {
+     "t": "Si",
+     "f": 95,
+     "chunk": 3
+    },
+    {
+     "t": "llegaste",
+     "f": 100,
+     "chunk": 3
+    },
+    {
+     "t": "hasta",
+     "f": 113,
+     "chunk": 4
+    },
+    {
+     "t": "aquí",
+     "f": 122,
+     "chunk": 4
+    },
+    {
+     "t": "sin",
+     "f": 129,
+     "chunk": 5
+    },
+    {
+     "t": "deslizar",
+     "f": 136,
+     "chunk": 5
+    },
+    {
+     "t": "tu",
+     "f": 155,
+     "chunk": 6
+    },
+    {
+     "t": "dopamina",
+     "f": 162,
+     "chunk": 6
+    },
+    {
+     "t": "ya",
+     "f": 181,
+     "chunk": 7
+    },
+    {
+     "t": "BAJÓ",
+     "f": 188,
+     "chunk": 7
+    },
+    {
+     "t": "Comenta",
+     "f": 206,
+     "chunk": 8
+    },
+    {
+     "t": "cuántas",
+     "f": 218,
+     "chunk": 9
+    },
+    {
+     "t": "horas",
+     "f": 231,
+     "chunk": 9
+    },
+    {
+     "t": "de",
+     "f": 240,
+     "chunk": 10
+    },
+    {
+     "t": "pantalla",
+     "f": 246,
+     "chunk": 10
+    },
+    {
+     "t": "tienes",
+     "f": 260,
+     "chunk": 11
+    },
+    {
+     "t": "HOY",
+     "f": 271,
+     "chunk": 11
+    }
+   ]
+  },
+  {
+   "id": "loop",
+   "duration": 80,
+   "voDelay": 4,
+   "voFrames": 71,
+   "parts": [
+    [
+     4,
+     75
+    ]
+   ],
+   "words": [
+    {
+     "t": "Porque",
+     "f": 4,
+     "chunk": 0
+    },
+    {
+     "t": "la",
+     "f": 15,
+     "chunk": 0
+    },
+    {
+     "t": "próxima",
+     "f": 21,
+     "chunk": 0
+    },
+    {
+     "t": "vez",
+     "f": 33,
+     "chunk": 0
+    },
+    {
+     "t": "que",
+     "f": 40,
+     "chunk": 1
+    },
+    {
+     "t": "tu",
+     "f": 47,
+     "chunk": 1
+    },
+    {
+     "t": "celular",
+     "f": 53,
+     "chunk": 1
+    },
+    {
+     "t": "VIBRE",
+     "f": 66,
+     "chunk": 2
+    }
+   ]
+  }
+ ]
+}

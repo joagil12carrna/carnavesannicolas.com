@@ -5,8 +5,8 @@
   "description": "Video 2D para TikTok: Dopamin Boy",
   "scripts": {
     "dev": "remotion studio",
-    "render": "remotion render DopaminBoy out/dopamin-boy.mp4",
-    "still": "remotion still DopaminBoy out/frame.png --frame=30"
+    "render": "remotion render DopaminBoyV2 out/dopamin-boy-v2.mp4",
+    "render:v1": "remotion render DopaminBoy out/dopamin-boy.mp4"
   },
   "dependencies": {
     "@remotion/cli": "4.0.545",
